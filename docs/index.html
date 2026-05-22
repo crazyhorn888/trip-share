@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>旅行行程</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">旅行行程</h1>
+    <p class="text-gray-500 mb-10">選擇一個行程查看詳細資訊</p>
+    <div id="trips" class="grid gap-6 md:grid-cols-2">
+      <!-- 行程卡片由 N8N 自動生成 -->
+      <div class="bg-white rounded-2xl shadow p-6 border border-gray-100">
+        <div class="text-sm text-blue-500 font-medium mb-1">2026 · 08</div>
+        <h2 class="text-xl font-bold text-gray-800 mb-1">紐西蘭</h2>
+        <p class="text-gray-500 text-sm mb-4">2026/07/16 – 2026/08/23</p>
+        <a href="./nz-2026/" class="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition">查看行程 →</a>
+      </div>
+    </div>
+    <p class="text-xs text-gray-400 mt-12 text-center">由 Numbers 自動同步 · <span id="updated"></span></p>
+  </div>
+  <script>
+    // 顯示最後更新時間（由 N8N 寫入 meta.json 後改為動態讀取）
+    document.getElementById('updated').textContent = '即將自動更新';
+  </script>
+</body>
+</html>
