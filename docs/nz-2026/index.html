@@ -5,11 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2026 紐西蘭 · 行程</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     html { scroll-behavior: smooth; }
     .tab-link { transition: color 0.2s, border-color 0.2s; }
     .tab-link.active { color: #2563EB; border-bottom-color: #2563EB; }
     .progress-fill { transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+    .stop-marker {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #2563EB; color: white;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(37,99,235,0.45);
+    }
+    .stop-marker.flight { background: #7C3AED; }
+    .leaflet-popup-content-wrapper { border-radius: 10px !important; }
   </style>
 </head>
 <body class="bg-slate-50 text-gray-800">
@@ -216,7 +228,10 @@
     ══════════════════════════════ -->
     <section id="bookings">
       <h2 class="text-xl font-bold text-gray-800 mb-6">✈️ 訂位</h2>
-      <div class="space-y-4">
+
+      <!-- 交通 -->
+      <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">🚗 交通</h3>
+      <div class="space-y-4 mb-8">
 
         <!-- 紐西蘭航空國內機票 -->
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
@@ -245,8 +260,8 @@
                 <span class="text-sm font-bold text-gray-800">紐西蘭租車</span>
                 <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">現場付款</span>
               </div>
-              <p class="text-sm text-gray-500">2026/07/17 – 08/23</p>
-              <p class="text-xs text-gray-400 mt-1">現場付款，抵達後結帳</p>
+              <p class="text-sm text-gray-500">2026/07/17 – 08/23 &nbsp;·&nbsp; 基督城取車</p>
+              <p class="text-xs text-gray-400 mt-1">有現場付款費用</p>
             </div>
             <div class="text-right shrink-0">
               <p class="text-lg font-bold text-gray-800">$36,707</p>
@@ -263,7 +278,7 @@
                 <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">現場付款</span>
               </div>
               <p class="text-sm text-gray-500">2026/08/14 – 08/23</p>
-              <p class="text-xs text-gray-400 mt-1">現場付款，抵達後結帳</p>
+              <p class="text-xs text-gray-400 mt-1">有現場付款費用</p>
             </div>
             <div class="text-right shrink-0">
               <p class="text-lg font-bold text-gray-800">$10,748</p>
@@ -279,8 +294,8 @@
                 <span class="text-sm font-bold text-gray-800">紐西蘭租車</span>
                 <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">現場付款</span>
               </div>
-              <p class="text-sm text-gray-500">2026/08/23 – 08/27</p>
-              <p class="text-xs text-gray-400 mt-1">現場付款，抵達後結帳</p>
+              <p class="text-sm text-gray-500">2026/08/23 – 08/27 &nbsp;·&nbsp; 北島段</p>
+              <p class="text-xs text-gray-400 mt-1">有現場付款費用</p>
             </div>
             <div class="text-right shrink-0">
               <p class="text-lg font-bold text-gray-800">$10,536</p>
@@ -288,13 +303,121 @@
           </div>
         </div>
 
-        <!-- 總計 -->
-        <div class="bg-slate-100 rounded-2xl p-4 flex justify-between items-center">
-          <span class="text-sm font-medium text-gray-600">訂位總計</span>
-          <span class="text-xl font-bold text-gray-800">$75,826</span>
+      </div>
+
+      <!-- 住宿 -->
+      <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">🏨 住宿</h3>
+      <div class="space-y-4 mb-8">
+
+        <!-- 基督城住宿 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-800">基督城住宿</span>
+                <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">已付</span>
+              </div>
+              <p class="text-sm text-gray-500">2026/07/20 – 08/15 &nbsp;·&nbsp; 26 晚</p>
+              <p class="text-xs text-gray-400 mt-1">三家庭平攤 · 每家 $51,850</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-lg font-bold text-gray-800">$155,560</p>
+              <p class="text-xs text-green-600">三家合計</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lake Tekapo -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-700">Lake Edge Holiday Park</span>
+                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
+              </div>
+              <p class="text-sm text-gray-400">2026/08/15 – 08/17 &nbsp;·&nbsp; Lake Tekapo</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-sm text-gray-400">費用待定</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mt. Cook -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-700">Mt. Cook Motel</span>
+                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
+              </div>
+              <p class="text-sm text-gray-400">2026/08/17 – 08/20 &nbsp;·&nbsp; 庫克山</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-sm text-gray-400">費用待定</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 皇后鎮 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-700">Airbnb</span>
+                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
+              </div>
+              <p class="text-sm text-gray-400">2026/08/20 – 08/24 &nbsp;·&nbsp; 皇后鎮</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-sm text-gray-400">費用待定</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 北島 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-700">Airbnb</span>
+                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
+              </div>
+              <p class="text-sm text-gray-400">2026/08/24 – 08/26 &nbsp;·&nbsp; 北島（哈比村 / 陶波 / 羅托魯瓦周邊）</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-sm text-gray-400">費用待定</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 奧克蘭 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-700">機場附近飯店</span>
+                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
+              </div>
+              <p class="text-sm text-gray-400">2026/08/26 – 08/27 &nbsp;·&nbsp; 奧克蘭</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-sm text-gray-400">費用待定</p>
+            </div>
+          </div>
         </div>
 
       </div>
+
+      <!-- 已確認訂位總計 -->
+      <div class="bg-slate-100 rounded-2xl p-4 flex justify-between items-center">
+        <div>
+          <span class="text-sm font-medium text-gray-600">已確認訂位總計</span>
+          <p class="text-xs text-gray-400 mt-0.5">交通 $75,826 + 住宿 $155,560</p>
+        </div>
+        <span class="text-xl font-bold text-gray-800">$231,386</span>
+      </div>
+
     </section>
 
     <!-- ══════════════════════════════
@@ -415,14 +538,40 @@
     ══════════════════════════════ -->
     <section id="map">
       <h2 class="text-xl font-bold text-gray-800 mb-6">🗺 路線地圖</h2>
-      <div class="rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-        <iframe
-          src="https://maps.google.com/maps?q=Christchurch,New+Zealand&t=m&z=5&output=embed"
-          width="100%" height="420" style="border:0;" allowfullscreen loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
+
+      <!-- 圖例 -->
+      <div class="flex flex-wrap gap-4 mb-4 text-xs text-gray-500">
+        <div class="flex items-center gap-1.5"><span class="inline-block w-6 h-0.5 bg-blue-500 rounded"></span>開車路段</div>
+        <div class="flex items-center gap-1.5"><span class="inline-block w-6 border-t-2 border-dashed border-purple-400"></span>飛機段</div>
+        <div class="flex items-center gap-1.5">
+          <span class="inline-flex w-5 h-5 rounded-full bg-blue-500 text-white text-xs items-center justify-center font-bold">1</span>
+          南島停靠點
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="inline-flex w-5 h-5 rounded-full bg-purple-500 text-white text-xs items-center justify-center font-bold">5</span>
+          北島停靠點
+        </div>
       </div>
-      <p class="text-xs text-gray-400 mt-2 text-center">主要停靠：基督城 · Lake Tekapo · Mt. Cook · 皇后鎮 · 羅托魯瓦 · 奧克蘭</p>
+
+      <div id="leaflet-map" class="rounded-2xl overflow-hidden shadow-sm border border-gray-100" style="height: 460px;"></div>
+
+      <div class="flex flex-wrap gap-2 mt-3 text-xs text-gray-500">
+        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">① 基督城</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">② Lake Tekapo</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">③ Mt. Cook</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">④ 皇后鎮</span>
+        <span class="text-gray-300">✈→</span>
+        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑤ 奧克蘭</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑥ 哈比村</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑦ 羅托魯瓦</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑧ 奧克蘭（回程）</span>
+      </div>
     </section>
 
     <!-- ══════════════════════════════
@@ -474,7 +623,7 @@
   </footer>
 
   <script>
-    // Tab 高亮：根據捲動位置更新導覽列
+    // ── Tab 高亮 ──
     const sections = document.querySelectorAll('section[id]');
     const tabs = document.querySelectorAll('.tab-link');
     const observer = new IntersectionObserver(entries => {
@@ -487,6 +636,58 @@
       });
     }, { rootMargin: '-30% 0px -60% 0px' });
     sections.forEach(s => observer.observe(s));
+
+    // ── Leaflet 地圖 ──
+    const stops = [
+      { name: '① 基督城',       coords: [-43.532, 172.636], island: 'south', date: '07/16 抵達' },
+      { name: '② Lake Tekapo', coords: [-44.005, 170.480], island: 'south', date: '08/15 – 08/17' },
+      { name: '③ Mt. Cook',    coords: [-43.739, 170.097], island: 'south', date: '08/17 – 08/20' },
+      { name: '④ 皇后鎮',       coords: [-45.031, 168.663], island: 'south', date: '08/20 – 08/24' },
+      { name: '⑤ 奧克蘭（飛抵）', coords: [-36.849, 174.763], island: 'north', date: '08/24 飛抵' },
+      { name: '⑥ 哈比村',       coords: [-37.752, 175.677], island: 'north', date: '08/24 – 08/25' },
+      { name: '⑦ 羅托魯瓦',     coords: [-38.137, 176.250], island: 'north', date: '08/25 – 08/26' },
+      { name: '⑧ 奧克蘭（回程）', coords: [-36.849, 174.763], island: 'north', date: '08/26 – 08/27' },
+    ];
+
+    const map = L.map('leaflet-map').setView([-40.5, 172.5], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
+    }).addTo(map);
+
+    // 南島開車路線（實線）
+    L.polyline(stops.slice(0,4).map(s => s.coords), {
+      color: '#2563EB', weight: 3.5, opacity: 0.75
+    }).addTo(map);
+
+    // 皇后鎮 → 奧克蘭 飛機（虛線）
+    L.polyline([stops[3].coords, stops[4].coords], {
+      color: '#7C3AED', weight: 2.5, opacity: 0.65, dashArray: '10 8'
+    }).addTo(map);
+
+    // 北島開車路線（實線）
+    L.polyline(stops.slice(4).map(s => s.coords), {
+      color: '#7C3AED', weight: 3.5, opacity: 0.75
+    }).addTo(map);
+
+    // 標記
+    stops.forEach((stop, i) => {
+      const isFlight = i === 4;
+      const isNorth = stop.island === 'north';
+      const color = isNorth ? '#7C3AED' : '#2563EB';
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="width:28px;height:28px;border-radius:50%;background:${color};
+               color:white;font-size:11px;font-weight:700;display:flex;
+               align-items:center;justify-content:center;border:2.5px solid white;
+               box-shadow:0 2px 8px rgba(0,0,0,0.25);">${i + 1}</div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+      });
+      L.marker(stop.coords, { icon })
+        .bindPopup(`<div style="min-width:130px"><b>${stop.name}</b><br>
+          <span style="color:#6b7280;font-size:12px">${stop.date}</span></div>`)
+        .addTo(map);
+    });
   </script>
 
 </body>
