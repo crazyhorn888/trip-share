@@ -3,16 +3,491 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2026 紐西蘭行程</title>
+  <title>2026 紐西蘭 · 行程</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    .tab-link { transition: color 0.2s, border-color 0.2s; }
+    .tab-link.active { color: #2563EB; border-bottom-color: #2563EB; }
+    .progress-fill { transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+  </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-  <div class="max-w-4xl mx-auto px-4 py-10">
-    <a href="../" class="text-sm text-blue-500 hover:underline mb-6 inline-block">← 所有行程</a>
-    <div class="bg-white rounded-2xl shadow p-8 border border-gray-100 text-center text-gray-400">
-      <p class="text-lg">行程資料同步後自動顯示</p>
-      <p class="text-sm mt-2">首次同步完成後此頁面將自動更新</p>
+<body class="bg-slate-50 text-gray-800">
+
+  <!-- ── 固定頂部導覽 ── -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100 shadow-sm">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center gap-3 py-3">
+        <a href="../" class="text-blue-500 hover:text-blue-700 text-sm font-medium shrink-0">← 所有行程</a>
+        <span class="text-gray-200">|</span>
+        <span class="font-semibold text-gray-700 truncate">🇳🇿 2026 紐西蘭</span>
+        <span class="ml-auto text-xs text-gray-400 shrink-0">更新：2026-05-22</span>
+      </div>
+      <nav class="flex gap-5 text-sm font-medium text-gray-400 overflow-x-auto pb-0 -mb-px">
+        <a href="#itinerary" class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap active">🗓 行程</a>
+        <a href="#bookings"  class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">✈️ 訂位</a>
+        <a href="#costs"     class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">💰 費用分攤</a>
+        <a href="#map"       class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">🗺 地圖</a>
+        <a href="#spots"     class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">📍 景點</a>
+      </nav>
     </div>
-  </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-10 space-y-14">
+
+    <!-- ── Hero ── -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div>
+        <h1 class="text-4xl font-bold text-gray-900">🇳🇿 2026 紐西蘭</h1>
+        <p class="text-gray-400 mt-1.5">2026/07/16 – 2026/08/27 &nbsp;·&nbsp; 42 天 &nbsp;·&nbsp; 3 個家庭同行</p>
+      </div>
+      <span class="self-start sm:self-auto bg-blue-50 text-blue-600 text-sm px-3 py-1 rounded-full font-medium">規劃中</span>
+    </div>
+
+    <!-- ══════════════════════════════
+         Section 1：行程時間軸
+    ══════════════════════════════ -->
+    <section id="itinerary">
+      <h2 class="text-xl font-bold text-gray-800 mb-6">🗓 行程</h2>
+
+      <div class="relative">
+        <!-- 垂直時間線 -->
+        <div class="absolute left-4 top-3 bottom-3 w-0.5 bg-blue-100 hidden sm:block"></div>
+
+        <div class="space-y-4">
+
+          <!-- 7/16 出發 -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-blue-500 border-2 border-white shadow items-center justify-center text-white text-xs">✈</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">07/16</span>
+                <span class="font-semibold text-gray-800">台北 → 基督城</span>
+              </div>
+              <p class="text-sm text-gray-500">出發 18:35 · 抵達 +1 13:25（次日）</p>
+            </div>
+          </div>
+
+          <!-- 7/20–8/15 基督城 -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-indigo-400 border-2 border-white shadow items-center justify-center text-white text-xs">🏫</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full">07/20 – 08/15</span>
+                <span class="font-semibold text-gray-800">基督城</span>
+              </div>
+              <p class="text-sm text-gray-500">語言課程</p>
+              <div class="mt-2 text-xs text-gray-400 space-y-0.5">
+                <p>🏠 住宿費 $155,560（三家庭平攤）</p>
+                <p>🚗 租車待定 · 生活開支待定</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8/15–8/17 Lake Tekapo -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-teal-400 border-2 border-white shadow items-center justify-center text-white text-xs">⛰</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">08/15 – 08/17</span>
+                <span class="font-semibold text-gray-800">基督城 → Lake Tekapo</span>
+              </div>
+              <ul class="text-sm text-gray-500 mt-1 space-y-1">
+                <li>· 牧羊人教堂</li>
+                <li>· Mt. John Observatory（可報名夜間觀星團）</li>
+                <li>· Tekapo Springs 泡湯玩水</li>
+              </ul>
+              <p class="text-xs text-gray-400 mt-2">🏕 Lake Edge Holiday Park（費用待定）</p>
+            </div>
+          </div>
+
+          <!-- 8/16–8/17 彈性一天 -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-gray-300 border-2 border-white shadow items-center justify-center text-white text-xs">?</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">08/16 – 08/17</span>
+                <span class="font-semibold text-gray-500">彈性（待定）</span>
+              </div>
+              <p class="text-sm text-gray-400">可在 Tekapo 多待一天或前往 Mt. Cook，視當天狀況決定</p>
+            </div>
+          </div>
+
+          <!-- 8/17–8/20 Mt. Cook -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-sky-400 border-2 border-white shadow items-center justify-center text-white text-xs">🏔</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full">08/17 – 08/20</span>
+                <span class="font-semibold text-gray-800">Mt. Cook（庫克山）</span>
+              </div>
+              <ul class="text-sm text-gray-500 mt-1 space-y-1">
+                <li>· 冰川飛行 <span class="text-xs text-gray-400">（KLOOK 訂購）</span></li>
+                <li>· Tasman Glacier Walk</li>
+                <li>· Hooker Valley Track</li>
+                <li>· 其他步道（自由安排）</li>
+              </ul>
+              <p class="text-xs text-gray-400 mt-2">🏨 Mt. Cook Motel（費用待定）</p>
+            </div>
+          </div>
+
+          <!-- 8/20–8/24 皇后鎮 -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-purple-400 border-2 border-white shadow items-center justify-center text-white text-xs">🎿</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">08/20 – 08/24</span>
+                <span class="font-semibold text-gray-800">皇后鎮（Queenstown）</span>
+              </div>
+              <ul class="text-sm text-gray-500 mt-1 space-y-1">
+                <li>· 跳傘 / 峽谷盪鞦韆</li>
+                <li>· 滑車 / 滑雪</li>
+                <li>· ONSEN 泡湯 <span class="text-xs text-gray-400">（五歲以下禁止）</span></li>
+                <li>· 米爾福峽灣一日遊 <span class="text-xs text-gray-400">（KLOOK 訂購）</span></li>
+              </ul>
+              <p class="text-xs text-gray-400 mt-2">🏠 Airbnb（費用待定）</p>
+            </div>
+          </div>
+
+          <!-- 8/24 飛奧克蘭 -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-blue-500 border-2 border-white shadow items-center justify-center text-white text-xs">✈</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">08/24</span>
+                <span class="font-semibold text-gray-800">皇后鎮 → 奧克蘭</span>
+              </div>
+              <p class="text-sm text-gray-500">出發 10:25 · 抵達 12:20</p>
+              <p class="text-xs text-gray-400 mt-1">機票待訂 · 租車待定</p>
+            </div>
+          </div>
+
+          <!-- 8/24–8/26 北島 -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-green-400 border-2 border-white shadow items-center justify-center text-white text-xs">🌿</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">08/24 – 08/26</span>
+                <span class="font-semibold text-gray-800">北島</span>
+              </div>
+              <ul class="text-sm text-gray-500 mt-1 space-y-1">
+                <li>· 哈比村（Hobbiton）</li>
+                <li>· 陶波（Taupo）</li>
+                <li>· 羅托魯瓦（Rotorua）</li>
+              </ul>
+              <p class="text-xs text-gray-400 mt-2">🏠 Airbnb（費用待定）</p>
+            </div>
+          </div>
+
+          <!-- 8/26–8/27 羅托魯瓦→奧克蘭 -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-orange-400 border-2 border-white shadow items-center justify-center text-white text-xs">🚗</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">08/26 – 08/27</span>
+                <span class="font-semibold text-gray-800">羅托魯瓦 → 奧克蘭</span>
+              </div>
+              <ul class="text-sm text-gray-500 mt-1 space-y-1">
+                <li>· City Walk</li>
+                <li>· 還車（08/26 或 08/27，待定）</li>
+              </ul>
+              <p class="text-xs text-gray-400 mt-2">🏨 機場附近飯店（費用待定）</p>
+            </div>
+          </div>
+
+          <!-- 8/27 回程 -->
+          <div class="sm:pl-12 relative">
+            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-blue-500 border-2 border-white shadow items-center justify-center text-white text-xs">✈</div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">08/27</span>
+                <span class="font-semibold text-gray-800">奧克蘭 → 台北</span>
+              </div>
+              <p class="text-sm text-gray-500">出發 09:40 · 抵達 17:05</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         Section 2：訂位
+    ══════════════════════════════ -->
+    <section id="bookings">
+      <h2 class="text-xl font-bold text-gray-800 mb-6">✈️ 訂位</h2>
+      <div class="space-y-4">
+
+        <!-- 紐西蘭航空國內機票 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-800">紐西蘭航空 國內機票</span>
+                <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">未付款</span>
+              </div>
+              <p class="text-sm text-gray-500">2026/08/23 &nbsp;·&nbsp; 皇后鎮 10:35 → 奧克蘭 12:25</p>
+              <p class="text-xs text-gray-400 mt-1">訂位代號：FX24XNH</p>
+              <p class="text-xs text-gray-400 mt-0.5">大人 $11,490 · 亮 $5,745（含選位費各 $200）</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-lg font-bold text-gray-800">$17,835</p>
+              <p class="text-xs text-amber-600">未付 $17,835</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 租車 1 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-800">紐西蘭租車</span>
+                <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">現場付款</span>
+              </div>
+              <p class="text-sm text-gray-500">2026/07/17 – 08/23</p>
+              <p class="text-xs text-gray-400 mt-1">現場付款，抵達後結帳</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-lg font-bold text-gray-800">$36,707</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 租車 2 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-800">紐西蘭租車</span>
+                <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">現場付款</span>
+              </div>
+              <p class="text-sm text-gray-500">2026/08/14 – 08/23</p>
+              <p class="text-xs text-gray-400 mt-1">現場付款，抵達後結帳</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-lg font-bold text-gray-800">$10,748</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 租車 3 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-gray-800">紐西蘭租車</span>
+                <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">現場付款</span>
+              </div>
+              <p class="text-sm text-gray-500">2026/08/23 – 08/27</p>
+              <p class="text-xs text-gray-400 mt-1">現場付款，抵達後結帳</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-lg font-bold text-gray-800">$10,536</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 總計 -->
+        <div class="bg-slate-100 rounded-2xl p-4 flex justify-between items-center">
+          <span class="text-sm font-medium text-gray-600">訂位總計</span>
+          <span class="text-xl font-bold text-gray-800">$75,826</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         Section 3：費用分攤
+    ══════════════════════════════ -->
+    <section id="costs">
+      <h2 class="text-xl font-bold text-gray-800 mb-6">💰 費用分攤</h2>
+
+      <!-- 家庭小計卡片 -->
+      <div class="grid grid-cols-2 gap-4 mb-8">
+
+        <!-- 哲宇家 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-800 mb-4">哲宇家</h3>
+          <div class="space-y-1.5 text-sm mb-4">
+            <div class="flex justify-between text-gray-500"><span>應付</span><span class="font-medium text-gray-700">$85,504</span></div>
+            <div class="flex justify-between text-gray-500"><span>已付</span><span class="font-medium text-green-600">$51,850</span></div>
+            <div class="flex justify-between text-gray-500"><span>未付</span><span class="font-medium text-amber-600">$33,654</span></div>
+          </div>
+          <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
+            <div class="progress-fill bg-blue-500 h-2 rounded-full" style="width: 60.6%"></div>
+          </div>
+          <p class="text-xs text-gray-400 mt-1.5">已付 60.6%</p>
+        </div>
+
+        <!-- 聖閔家 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-800 mb-4">聖閔家</h3>
+          <div class="space-y-1.5 text-sm mb-4">
+            <div class="flex justify-between text-gray-500"><span>應付</span><span class="font-medium text-gray-700">$85,504</span></div>
+            <div class="flex justify-between text-gray-500"><span>已付</span><span class="font-medium text-green-600">$51,850</span></div>
+            <div class="flex justify-between text-gray-500"><span>未付</span><span class="font-medium text-amber-600">$33,654</span></div>
+          </div>
+          <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
+            <div class="progress-fill bg-blue-500 h-2 rounded-full" style="width: 60.6%"></div>
+          </div>
+          <p class="text-xs text-gray-400 mt-1.5">已付 60.6%</p>
+        </div>
+
+      </div>
+
+      <!-- 費用明細表 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 text-gray-400 text-xs uppercase tracking-wide">
+                <th class="px-4 py-3 text-left font-semibold">項目</th>
+                <th class="px-4 py-3 text-right font-semibold">哲宇應付</th>
+                <th class="px-4 py-3 text-right font-semibold">哲宇已付</th>
+                <th class="px-4 py-3 text-right font-semibold">哲宇餘款</th>
+                <th class="px-4 py-3 text-right font-semibold">聖閔應付</th>
+                <th class="px-4 py-3 text-right font-semibold">聖閔已付</th>
+                <th class="px-4 py-3 text-right font-semibold">聖閔餘款</th>
+                <th class="px-4 py-3 text-left font-semibold">備註</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3 font-medium text-gray-700">基督城住宿</td>
+                <td class="px-4 py-3 text-right text-gray-600">$51,850</td>
+                <td class="px-4 py-3 text-right text-green-600 font-medium">$51,850</td>
+                <td class="px-4 py-3 text-right"><span class="text-green-600 font-semibold">✓ 0</span></td>
+                <td class="px-4 py-3 text-right text-gray-600">$51,850</td>
+                <td class="px-4 py-3 text-right text-green-600 font-medium">$51,850</td>
+                <td class="px-4 py-3 text-right"><span class="text-green-600 font-semibold">✓ 0</span></td>
+                <td class="px-4 py-3 text-gray-400 text-xs">51,850/家</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3 font-medium text-gray-700">國內航空機票</td>
+                <td class="px-4 py-3 text-right text-gray-600">$17,835</td>
+                <td class="px-4 py-3 text-right text-gray-400">$0</td>
+                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$17,835</span></td>
+                <td class="px-4 py-3 text-right text-gray-600">$17,835</td>
+                <td class="px-4 py-3 text-right text-gray-400">$0</td>
+                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$17,835</span></td>
+                <td class="px-4 py-3 text-gray-400 text-xs"></td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3 font-medium text-gray-700">租車 07/17–08/23</td>
+                <td class="px-4 py-3 text-right text-gray-600">$12,236</td>
+                <td class="px-4 py-3 text-right text-gray-400">$0</td>
+                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$12,236</span></td>
+                <td class="px-4 py-3 text-right text-gray-600">$12,236</td>
+                <td class="px-4 py-3 text-right text-gray-400">$0</td>
+                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$12,236</span></td>
+                <td class="px-4 py-3 text-gray-400 text-xs">36,707/3家</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3 font-medium text-gray-700">租車 08/14–08/23</td>
+                <td class="px-4 py-3 text-right text-gray-600">$3,583</td>
+                <td class="px-4 py-3 text-right text-gray-400">$0</td>
+                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$3,583</span></td>
+                <td class="px-4 py-3 text-right text-gray-600">$3,583</td>
+                <td class="px-4 py-3 text-right text-gray-400">$0</td>
+                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$3,583</span></td>
+                <td class="px-4 py-3 text-gray-400 text-xs">10,748/3家</td>
+              </tr>
+              <!-- 合計列 -->
+              <tr class="bg-slate-50 font-semibold">
+                <td class="px-4 py-3 text-gray-700">合計</td>
+                <td class="px-4 py-3 text-right text-gray-700">$85,504</td>
+                <td class="px-4 py-3 text-right text-green-600">$51,850</td>
+                <td class="px-4 py-3 text-right text-amber-600">$33,654</td>
+                <td class="px-4 py-3 text-right text-gray-700">$85,504</td>
+                <td class="px-4 py-3 text-right text-green-600">$51,850</td>
+                <td class="px-4 py-3 text-right text-amber-600">$33,654</td>
+                <td class="px-4 py-3"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         Section 4：地圖
+    ══════════════════════════════ -->
+    <section id="map">
+      <h2 class="text-xl font-bold text-gray-800 mb-6">🗺 路線地圖</h2>
+      <div class="rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+        <iframe
+          src="https://maps.google.com/maps?q=Christchurch,New+Zealand&t=m&z=5&output=embed"
+          width="100%" height="420" style="border:0;" allowfullscreen loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+      <p class="text-xs text-gray-400 mt-2 text-center">主要停靠：基督城 · Lake Tekapo · Mt. Cook · 皇后鎮 · 羅托魯瓦 · 奧克蘭</p>
+    </section>
+
+    <!-- ══════════════════════════════
+         Section 5：AI 景點介紹
+    ══════════════════════════════ -->
+    <section id="spots">
+      <h2 class="text-xl font-bold text-gray-800 mb-2">📍 景點介紹</h2>
+      <p class="text-sm text-gray-400 mb-6">由 AI 自動生成，地點變更時自動更新</p>
+      <div class="space-y-4">
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-800 mb-2">🏙 基督城（Christchurch）</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">紐西蘭南島最大城市，以「花園城市」著稱。市區保有歐式建築風情，基督教堂廣場是地標。2011 年大地震後城市積極重建，現有許多新穎的藝術裝置與貨櫃商場（Re:START Mall）。推薦搭乘復古電車遊市區，或前往植物園散步。</p>
+          <p class="text-xs text-gray-400 mt-3">💡 Tip：從機場前往市中心約 20 分鐘，可租車或搭 Metro Bus</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-800 mb-2">⛰ Lake Tekapo（蒂卡波湖）</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">以湖水的夢幻藍色和絕佳星空聞名，是國際暗夜保護區的一部分。牧羊人教堂（Church of the Good Shepherd）是紐西蘭最多人拍照的地標之一。Mt. John 天文台提供夜間觀星導覽，強烈推薦提前預訂。</p>
+          <p class="text-xs text-gray-400 mt-3">💡 Tip：觀星團建議提前 2 週以上預約，冬季（8 月）能見度最佳</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-800 mb-2">🏔 Mt. Cook（庫克山）</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">紐西蘭最高峰（3,724 公尺），也是登山家艾德蒙·希拉里爵士練習攀登珠穆朗瑪峰的地方。塔斯曼冰川飛行可從空中俯瞰冰原，Hooker Valley Track 健行步道全長 10 公里來回，終點可看到庫克山倒映在湖面上，是必走路線。</p>
+          <p class="text-xs text-gray-400 mt-3">💡 Tip：Hooker Valley Track 起伏不大，帶孩子也可走，建議早上出發避開下午強風</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-800 mb-2">🎿 皇后鎮（Queenstown）</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">紐西蘭冒險活動之都，跳傘、高空彈跳、峽谷鞦韆一應俱全。冬季滑雪（Remarkables 或 Coronet Peak 雪場）是熱門活動。米爾福峽灣（Milford Sound）一日遊從皇后鎮出發約 4 小時，是南島必訪景點，建議提早訂位。</p>
+          <p class="text-xs text-gray-400 mt-3">💡 Tip：ONSEN 溫泉禁止 5 歲以下兒童，有小孩的家庭需注意</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-800 mb-2">🌋 羅托魯瓦（Rotorua）</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">北島的地熱奇景城市，空氣中帶有硫磺味。Wai-O-Tapu 地熱公園有大量彩色溫泉和間歇泉，Te Puia 毛利文化村可體驗傳統歌舞表演與地熱景觀。陶波（Taupo）附近的胡卡瀑布水量磅礡，開車前往約 1 小時。</p>
+          <p class="text-xs text-gray-400 mt-3">💡 Tip：哈比村（Hobbiton）在 Matamata，從羅托魯瓦出發約 1 小時，強烈建議提前網路訂票</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="text-center text-xs text-gray-300 py-10 border-t border-gray-100 mt-4">
+    由 Numbers 自動同步 &nbsp;·&nbsp; 最後更新：2026-05-22 &nbsp;·&nbsp;
+    <a href="../" class="text-blue-300 hover:underline">← 所有行程</a>
+  </footer>
+
+  <script>
+    // Tab 高亮：根據捲動位置更新導覽列
+    const sections = document.querySelectorAll('section[id]');
+    const tabs = document.querySelectorAll('.tab-link');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tabs.forEach(t => t.classList.remove('active'));
+          const active = document.querySelector(`.tab-link[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+
 </body>
 </html>

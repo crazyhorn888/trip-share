@@ -6,24 +6,41 @@
   <title>旅行行程</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-slate-50 min-h-screen">
+
   <div class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">旅行行程</h1>
-    <p class="text-gray-500 mb-10">選擇一個行程查看詳細資訊</p>
-    <div id="trips" class="grid gap-6 md:grid-cols-2">
-      <!-- 行程卡片由 N8N 自動生成 -->
-      <div class="bg-white rounded-2xl shadow p-6 border border-gray-100">
-        <div class="text-sm text-blue-500 font-medium mb-1">2026 · 08</div>
-        <h2 class="text-xl font-bold text-gray-800 mb-1">紐西蘭</h2>
-        <p class="text-gray-500 text-sm mb-4">2026/07/16 – 2026/08/23</p>
-        <a href="./nz-2026/" class="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition">查看行程 →</a>
-      </div>
+    <div class="mb-10">
+      <h1 class="text-3xl font-bold text-gray-900">🌏 旅行行程</h1>
+      <p class="text-gray-400 text-sm mt-1">由 Numbers 自動同步</p>
     </div>
-    <p class="text-xs text-gray-400 mt-12 text-center">由 Numbers 自動同步 · <span id="updated"></span></p>
+
+    <div class="grid gap-5 sm:grid-cols-2">
+
+      <!-- 紐西蘭行程卡片 -->
+      <a href="./nz-2026/" class="group bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md hover:border-blue-100 transition-all">
+        <div class="text-3xl mb-3">🇳🇿</div>
+        <div class="text-xs text-blue-500 font-semibold mb-1 uppercase tracking-wide">2026 · 08</div>
+        <h2 class="text-xl font-bold text-gray-800 mb-1 group-hover:text-blue-600 transition-colors">紐西蘭</h2>
+        <p class="text-sm text-gray-400 mb-4">2026/07/16 – 2026/08/27 · 42 天</p>
+        <div class="flex items-center gap-2">
+          <span class="bg-blue-50 text-blue-600 text-xs px-2 py-0.5 rounded-full font-medium">規劃中</span>
+          <span class="text-xs text-gray-400">3 個家庭</span>
+        </div>
+        <div class="mt-4 text-sm text-blue-500 font-medium group-hover:underline">查看行程 →</div>
+      </a>
+
+      <!-- 未來行程佔位卡片 -->
+      <div class="bg-white rounded-2xl border border-dashed border-gray-200 p-6 flex items-center justify-center text-center">
+        <div>
+          <div class="text-3xl mb-2 opacity-30">✈️</div>
+          <p class="text-sm text-gray-300">下一個旅程<br>加入 Numbers 資料夾後自動出現</p>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="text-xs text-gray-300 text-center mt-12">由 Numbers 自動同步 · 最後更新：請等 N8N 首次同步後顯示</p>
   </div>
-  <script>
-    // 顯示最後更新時間（由 N8N 寫入 meta.json 後改為動態讀取）
-    document.getElementById('updated').textContent = '即將自動更新';
-  </script>
+
 </body>
 </html>
