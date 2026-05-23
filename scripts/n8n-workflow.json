@@ -12,7 +12,8 @@
       "name": "收到同步請求",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [240, 300]
+      "position": [240, 300],
+      "webhookId": "d4a7b3c2-1e5f-4a8b-9c3d-2f6e1a4b7c8d"
     },
     {
       "parameters": {
@@ -40,7 +41,7 @@
       "typeVersion": 4.2,
       "position": [680, 300],
       "credentials": {
-        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+        "httpHeaderAuth": { "id": "QoK9TA32LNBMbtRX", "name": "GitHub Token" }
       }
     },
     {
@@ -74,38 +75,41 @@
     },
     {
       "parameters": {
+        "jsCode": "const d = $input.item.json;\nconst prompt = '請用繁體中文為以下景點各寫一段介紹（每個景點約 150 字，包含簡介、必看亮點、1-2 個實用 tips）。\\n\\n景點列表：' + d.new_locations.join('、') + '\\n\\n請以 JSON 格式回覆，格式範例：{ \"景點名\": { \"intro\": \"介紹內容\", \"tips\": \"Tip 內容\" } }。只回傳 JSON，不要其他說明文字。';\n\nreturn [{ json: { ...d, openai_body: { model: 'gpt-4o-mini', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] } } }];"
+      },
+      "id": "n6a-prep-openai",
+      "name": "組合 OpenAI 請求",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1220, 160]
+    },
+    {
+      "parameters": {
         "method": "POST",
-        "url": "https://api.anthropic.com/v1/messages",
+        "url": "https://api.openai.com/v1/chat/completions",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            { "name": "anthropic-version", "value": "2023-06-01" },
-            { "name": "content-type",      "value": "application/json" }
-          ]
-        },
         "sendBody": true,
-        "contentType": "rawBody",
-        "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 2048, messages: [{ role: 'user', content: '請用繁體中文為以下紐西蘭景點各寫一段介紹（每個景點約 150 字，包含簡介、必看亮點、1-2 個實用 tips）。\\n\\n景點列表：' + $json.new_locations.join('、') + '\\n\\n請以 JSON 格式回覆，格式範例：{ \"景點名\": { \"intro\": \"介紹內容\", \"tips\": \"Tip 內容\" } }。只回傳 JSON，不要其他說明文字。' }] }) }}",
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.openai_body) }}",
         "options": {}
       },
       "id": "n6-claude",
-      "name": "呼叫 Claude API",
+      "name": "呼叫 OpenAI API",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1340, 160],
+      "position": [1440, 160],
       "credentials": {
-        "httpHeaderAuth": { "id": "FILL_IN_CLAUDE_CRED_ID", "name": "Claude API Key" }
+        "httpHeaderAuth": { "id": "rfj4i0z02gn3qDDD", "name": "OpenAI API Key" }
       }
     },
     {
       "parameters": {
-        "jsCode": "const tripData = $('比對 hash').item.json;\nconst claudeResp = $input.item.json;\n\nlet newAI = {};\ntry {\n  const rawText = claudeResp.content[0].text.trim();\n  // 擷取 JSON 區塊（Claude 可能包在 markdown code block）\n  const match = rawText.match(/\\{[\\s\\S]*\\}/);\n  if (match) newAI = JSON.parse(match[0]);\n} catch(e) {\n  console.log('AI parse error:', e.message);\n}\n\nreturn [{ json: {\n  ...tripData,\n  ai_content: { ...tripData.cached_ai, ...newAI },\n  ai_updated: true,\n  ai_new_count: Object.keys(newAI).length\n} }];"
+        "jsCode": "const tripData = $('比對 hash').item.json;\nconst openaiResp = $input.item.json;\n\nlet newAI = {};\ntry {\n  const rawText = openaiResp.choices[0].message.content.trim();\n  // 擷取 JSON 區塊（GPT 可能包在 markdown code block）\n  const match = rawText.match(/\\{[\\s\\S]*\\}/);\n  if (match) newAI = JSON.parse(match[0]);\n} catch(e) {\n  console.log('AI parse error:', e.message);\n}\n\nreturn [{ json: {\n  ...tripData,\n  ai_content: { ...tripData.cached_ai, ...newAI },\n  ai_updated: true,\n  ai_new_count: Object.keys(newAI).length\n} }];"
       },
       "id": "n7-merge-ai",
-      "name": "合併 AI 內容",
+      "name": "合併 AI 內容（OpenAI）",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [1560, 160]
@@ -122,18 +126,7 @@
     },
     {
       "parameters": {
-        "mode": "chooseBranch",
-        "output": "input1"
-      },
-      "id": "n9-merge",
-      "name": "合流",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [1780, 300]
-    },
-    {
-      "parameters": {
-        "jsCode": "const d = $input.item.json;\n\n// 組合 data.json（供網頁讀取）\nconst dataJson = {\n  trip_name:    d.trip_name,\n  trip_id:      d.trip_id,\n  date_range:   d.date_range,\n  last_updated: d.last_updated,\n  locations:    d.locations,\n  cost_summary: d.cost_summary,\n  ai_content:   d.ai_content\n};\n\n// 組合 cache.json（供下次比對）\nconst cacheJson = {\n  location_hash: d.location_hash,\n  locations:     d.locations,\n  ai_content:    d.ai_content,\n  updated_at:    d.last_updated\n};\n\nreturn [{ json: {\n  ...d,\n  data_json_b64:  Buffer.from(JSON.stringify(dataJson, null, 2)).toString('base64'),\n  cache_json_b64: Buffer.from(JSON.stringify(cacheJson, null, 2)).toString('base64')\n} }];"
+        "jsCode": "const d = $input.item.json;\n\n// 組合 data.json（供網頁讀取）\nconst dataJson = {\n  trip_name:    d.trip_name,\n  trip_id:      d.trip_id,\n  date_range:   d.date_range,\n  last_updated: d.last_updated,\n  locations:    d.locations,\n  itinerary:    d.itinerary || [],\n  cost_summary: d.cost_summary,\n  ai_content:   d.ai_content\n};\n\n// 組合 cache.json（供下次比對）\nconst cacheJson = {\n  location_hash: d.location_hash,\n  locations:     d.locations,\n  ai_content:    d.ai_content,\n  updated_at:    d.last_updated\n};\n\nreturn [{ json: {\n  ...d,\n  data_json_b64:  Buffer.from(JSON.stringify(dataJson, null, 2)).toString('base64'),\n  cache_json_b64: Buffer.from(JSON.stringify(cacheJson, null, 2)).toString('base64')\n} }];"
       },
       "id": "n10-build-json",
       "name": "組合 JSON 檔案",
@@ -157,7 +150,7 @@
       "typeVersion": 4.2,
       "position": [2220, 300],
       "credentials": {
-        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+        "httpHeaderAuth": { "id": "QoK9TA32LNBMbtRX", "name": "GitHub Token" }
       }
     },
     {
@@ -188,7 +181,7 @@
       "typeVersion": 4.2,
       "position": [2660, 300],
       "credentials": {
-        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+        "httpHeaderAuth": { "id": "QoK9TA32LNBMbtRX", "name": "GitHub Token" }
       }
     },
     {
@@ -207,7 +200,7 @@
       "typeVersion": 4.2,
       "position": [2880, 300],
       "credentials": {
-        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+        "httpHeaderAuth": { "id": "QoK9TA32LNBMbtRX", "name": "GitHub Token" }
       }
     },
     {
@@ -238,7 +231,7 @@
       "typeVersion": 4.2,
       "position": [3320, 300],
       "credentials": {
-        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+        "httpHeaderAuth": { "id": "QoK9TA32LNBMbtRX", "name": "GitHub Token" }
       }
     },
     {
@@ -269,20 +262,20 @@
     },
     "需要 AI 更新？": {
       "main": [
-        [{ "node": "呼叫 Claude API", "type": "main", "index": 0 }],
+        [{ "node": "組合 OpenAI 請求", "type": "main", "index": 0 }],
         [{ "node": "使用快取 AI",     "type": "main", "index": 0 }]
       ]
     },
-    "呼叫 Claude API": {
-      "main": [[{ "node": "合併 AI 內容", "type": "main", "index": 0 }]]
+    "組合 OpenAI 請求": {
+      "main": [[{ "node": "呼叫 OpenAI API", "type": "main", "index": 0 }]]
     },
-    "合併 AI 內容": {
-      "main": [[{ "node": "合流", "type": "main", "index": 0 }]]
+    "呼叫 OpenAI API": {
+      "main": [[{ "node": "合併 AI 內容（OpenAI）", "type": "main", "index": 0 }]]
+    },
+    "合併 AI 內容（OpenAI）": {
+      "main": [[{ "node": "組合 JSON 檔案", "type": "main", "index": 0 }]]
     },
     "使用快取 AI": {
-      "main": [[{ "node": "合流", "type": "main", "index": 1 }]]
-    },
-    "合流": {
       "main": [[{ "node": "組合 JSON 檔案", "type": "main", "index": 0 }]]
     },
     "組合 JSON 檔案": {

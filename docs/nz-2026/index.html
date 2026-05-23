@@ -12,23 +12,48 @@
     .tab-link { transition: color 0.2s, border-color 0.2s; }
     .tab-link.active { color: #2563EB; border-bottom-color: #2563EB; }
     .progress-fill { transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
-    .stop-marker {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: #2563EB; color: white;
-      font-size: 12px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      border: 2px solid white;
-      box-shadow: 0 2px 6px rgba(37,99,235,0.45);
+
+    /* 行程分欄 */
+    .phase-card {
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
     }
-    .stop-marker.flight { background: #7C3AED; }
+    .phase-card:hover { border-color: #bfdbfe; }
+    .phase-card.active {
+      border-color: #2563EB;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+    .phase-card .ai-section {
+      display: none;
+    }
+    .phase-card.active .ai-section,
+    .phase-card:hover .ai-section {
+      display: block;
+    }
+    /* 始終顯示 AI 介紹 */
+    .phase-card .ai-always { display: block; }
+
+    /* 地圖脈動標記 */
+    @keyframes pulse-ring {
+      0%   { transform: scale(1);   opacity: 0.7; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    .marker-pulse::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(37,99,235,0.4);
+      animation: pulse-ring 1.4s ease-out infinite;
+    }
     .leaflet-popup-content-wrapper { border-radius: 10px !important; }
   </style>
 </head>
 <body class="bg-slate-50 text-gray-800">
 
   <!-- ── 固定頂部導覽 ── -->
-  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100 shadow-sm">
-    <div class="max-w-4xl mx-auto px-4">
+  <header id="site-header" class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4">
       <div class="flex items-center gap-3 py-3">
         <a href="../" class="text-blue-500 hover:text-blue-700 text-sm font-medium shrink-0">← 所有行程</a>
         <span class="text-gray-200">|</span>
@@ -45,7 +70,7 @@
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 py-10 space-y-14">
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-14">
 
     <!-- ── Hero ── -->
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -57,169 +82,54 @@
     </div>
 
     <!-- ══════════════════════════════
-         Section 1：行程時間軸
+         Section 1：行程（左地圖 + 右卡片）
     ══════════════════════════════ -->
     <section id="itinerary">
-      <h2 class="text-xl font-bold text-gray-800 mb-6">🗓 行程</h2>
+      <h2 class="text-xl font-bold text-gray-800 mb-5">🗓 行程</h2>
 
-      <div class="relative">
-        <!-- 垂直時間線 -->
-        <div class="absolute left-4 top-3 bottom-3 w-0.5 bg-blue-100 hidden sm:block"></div>
+      <div class="flex flex-col lg:flex-row gap-5 lg:items-start">
 
-        <div class="space-y-4">
+        <!-- ── 左：Sticky 地圖 ── -->
+        <div class="lg:w-[44%] lg:flex-shrink-0 lg:sticky lg:top-24 lg:self-start">
+          <div id="itinerary-map"
+               class="rounded-2xl overflow-hidden border border-gray-100 shadow-sm w-full"
+               style="height: 52vh; min-height: 340px; max-height: 520px;"></div>
 
-          <!-- 7/16 出發 -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-blue-500 border-2 border-white shadow items-center justify-center text-white text-xs">✈</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">07/16</span>
-                <span class="font-semibold text-gray-800">台北 → 基督城</span>
-              </div>
-              <p class="text-sm text-gray-500">出發 18:35 · 抵達 +1 13:25（次日）</p>
+          <!-- 地圖下方：當前階段摘要 -->
+          <div id="map-phase-bar"
+               class="mt-2.5 hidden bg-white rounded-xl border border-blue-100 px-4 py-3 shadow-sm text-sm">
+            <div class="flex items-center gap-2">
+              <span id="map-bar-badge" class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full"></span>
+              <span id="map-bar-loc" class="font-semibold text-gray-800 truncate"></span>
             </div>
+            <p id="map-bar-act" class="text-xs text-gray-400 mt-0.5 truncate"></p>
           </div>
 
-          <!-- 7/20–8/15 基督城 -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-indigo-400 border-2 border-white shadow items-center justify-center text-white text-xs">🏫</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-full">07/20 – 08/15</span>
-                <span class="font-semibold text-gray-800">基督城</span>
-              </div>
-              <p class="text-sm text-gray-500">語言課程</p>
-              <div class="mt-2 text-xs text-gray-400 space-y-0.5">
-                <p>🏠 住宿費 $155,560（三家庭平攤）</p>
-                <p>🚗 租車待定 · 生活開支待定</p>
-              </div>
-            </div>
+          <!-- 圖例 -->
+          <div class="flex flex-wrap gap-3 mt-2.5 text-xs text-gray-400">
+            <span class="flex items-center gap-1.5">
+              <span class="inline-block w-5 h-0.5 bg-blue-500 rounded"></span>南島路線
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="inline-block w-5 border-t-2 border-dashed border-purple-400"></span>飛行段
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="inline-block w-5 h-0.5 bg-purple-500 rounded"></span>北島路線
+            </span>
           </div>
-
-          <!-- 8/15–8/17 Lake Tekapo -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-teal-400 border-2 border-white shadow items-center justify-center text-white text-xs">⛰</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full">08/15 – 08/17</span>
-                <span class="font-semibold text-gray-800">基督城 → Lake Tekapo</span>
-              </div>
-              <ul class="text-sm text-gray-500 mt-1 space-y-1">
-                <li>· 牧羊人教堂</li>
-                <li>· Mt. John Observatory（可報名夜間觀星團）</li>
-                <li>· Tekapo Springs 泡湯玩水</li>
-              </ul>
-              <p class="text-xs text-gray-400 mt-2">🏕 Lake Edge Holiday Park（費用待定）</p>
-            </div>
-          </div>
-
-          <!-- 8/16–8/17 彈性一天 -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-gray-300 border-2 border-white shadow items-center justify-center text-white text-xs">?</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">08/16 – 08/17</span>
-                <span class="font-semibold text-gray-500">彈性（待定）</span>
-              </div>
-              <p class="text-sm text-gray-400">可在 Tekapo 多待一天或前往 Mt. Cook，視當天狀況決定</p>
-            </div>
-          </div>
-
-          <!-- 8/17–8/20 Mt. Cook -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-sky-400 border-2 border-white shadow items-center justify-center text-white text-xs">🏔</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full">08/17 – 08/20</span>
-                <span class="font-semibold text-gray-800">Mt. Cook（庫克山）</span>
-              </div>
-              <ul class="text-sm text-gray-500 mt-1 space-y-1">
-                <li>· 冰川飛行 <span class="text-xs text-gray-400">（KLOOK 訂購）</span></li>
-                <li>· Tasman Glacier Walk</li>
-                <li>· Hooker Valley Track</li>
-                <li>· 其他步道（自由安排）</li>
-              </ul>
-              <p class="text-xs text-gray-400 mt-2">🏨 Mt. Cook Motel（費用待定）</p>
-            </div>
-          </div>
-
-          <!-- 8/20–8/24 皇后鎮 -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-purple-400 border-2 border-white shadow items-center justify-center text-white text-xs">🎿</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">08/20 – 08/24</span>
-                <span class="font-semibold text-gray-800">皇后鎮（Queenstown）</span>
-              </div>
-              <ul class="text-sm text-gray-500 mt-1 space-y-1">
-                <li>· 跳傘 / 峽谷盪鞦韆</li>
-                <li>· 滑車 / 滑雪</li>
-                <li>· ONSEN 泡湯 <span class="text-xs text-gray-400">（五歲以下禁止）</span></li>
-                <li>· 米爾福峽灣一日遊 <span class="text-xs text-gray-400">（KLOOK 訂購）</span></li>
-              </ul>
-              <p class="text-xs text-gray-400 mt-2">🏠 Airbnb（費用待定）</p>
-            </div>
-          </div>
-
-          <!-- 8/24 飛奧克蘭 -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-blue-500 border-2 border-white shadow items-center justify-center text-white text-xs">✈</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">08/24</span>
-                <span class="font-semibold text-gray-800">皇后鎮 → 奧克蘭</span>
-              </div>
-              <p class="text-sm text-gray-500">出發 10:25 · 抵達 12:20</p>
-              <p class="text-xs text-gray-400 mt-1">機票待訂 · 租車待定</p>
-            </div>
-          </div>
-
-          <!-- 8/24–8/26 北島 -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-green-400 border-2 border-white shadow items-center justify-center text-white text-xs">🌿</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">08/24 – 08/26</span>
-                <span class="font-semibold text-gray-800">北島</span>
-              </div>
-              <ul class="text-sm text-gray-500 mt-1 space-y-1">
-                <li>· 哈比村（Hobbiton）</li>
-                <li>· 陶波（Taupo）</li>
-                <li>· 羅托魯瓦（Rotorua）</li>
-              </ul>
-              <p class="text-xs text-gray-400 mt-2">🏠 Airbnb（費用待定）</p>
-            </div>
-          </div>
-
-          <!-- 8/26–8/27 羅托魯瓦→奧克蘭 -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-orange-400 border-2 border-white shadow items-center justify-center text-white text-xs">🚗</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full">08/26 – 08/27</span>
-                <span class="font-semibold text-gray-800">羅托魯瓦 → 奧克蘭</span>
-              </div>
-              <ul class="text-sm text-gray-500 mt-1 space-y-1">
-                <li>· City Walk</li>
-                <li>· 還車（08/26 或 08/27，待定）</li>
-              </ul>
-              <p class="text-xs text-gray-400 mt-2">🏨 機場附近飯店（費用待定）</p>
-            </div>
-          </div>
-
-          <!-- 8/27 回程 -->
-          <div class="sm:pl-12 relative">
-            <div class="hidden sm:flex absolute left-2 top-3 w-5 h-5 rounded-full bg-blue-500 border-2 border-white shadow items-center justify-center text-white text-xs">✈</div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-0.5 rounded-full">08/27</span>
-                <span class="font-semibold text-gray-800">奧克蘭 → 台北</span>
-              </div>
-              <p class="text-sm text-gray-500">出發 09:40 · 抵達 17:05</p>
-            </div>
-          </div>
-
         </div>
+
+        <!-- ── 右：可捲動行程卡片 ── -->
+        <div class="lg:flex-1 min-w-0">
+          <div id="phase-cards" class="space-y-3">
+            <!-- 載入中 placeholder -->
+            <div id="phase-loading" class="bg-white rounded-2xl p-8 border border-gray-100 text-center text-gray-300">
+              <p class="text-sm">行程資料載入中…</p>
+              <p class="text-xs mt-1 text-gray-200">儲存 Numbers 檔案後自動更新</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -231,9 +141,8 @@
 
       <!-- 交通 -->
       <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">🚗 交通</h3>
-      <div class="space-y-4 mb-8">
+      <div id="bookings-transport" class="space-y-4 mb-8">
 
-        <!-- 紐西蘭航空國內機票 -->
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -252,7 +161,6 @@
           </div>
         </div>
 
-        <!-- 租車 1 -->
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -269,7 +177,6 @@
           </div>
         </div>
 
-        <!-- 租車 2 -->
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -286,7 +193,6 @@
           </div>
         </div>
 
-        <!-- 租車 3 -->
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -307,9 +213,8 @@
 
       <!-- 住宿 -->
       <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">🏨 住宿</h3>
-      <div class="space-y-4 mb-8">
+      <div id="bookings-stays" class="space-y-4">
 
-        <!-- 基督城住宿 -->
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -317,107 +222,17 @@
                 <span class="text-sm font-bold text-gray-800">基督城住宿</span>
                 <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">已付</span>
               </div>
-              <p class="text-sm text-gray-500">2026/07/20 – 08/15 &nbsp;·&nbsp; 26 晚</p>
-              <p class="text-xs text-gray-400 mt-1">三家庭平攤 · 每家 $51,850</p>
+              <p class="text-sm text-gray-500">2026/07/17 – 08/15 &nbsp;·&nbsp; 155 Fitzgerald Ave</p>
+              <p class="text-xs text-gray-400 mt-1">三家庭平攤</p>
             </div>
             <div class="text-right shrink-0">
-              <p class="text-lg font-bold text-gray-800">$155,560</p>
-              <p class="text-xs text-green-600">三家合計</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lake Tekapo -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-sm font-bold text-gray-700">Lake Edge Holiday Park</span>
-                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
-              </div>
-              <p class="text-sm text-gray-400">2026/08/15 – 08/17 &nbsp;·&nbsp; Lake Tekapo</p>
-            </div>
-            <div class="text-right shrink-0">
-              <p class="text-sm text-gray-400">費用待定</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mt. Cook -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-sm font-bold text-gray-700">Mt. Cook Motel</span>
-                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
-              </div>
-              <p class="text-sm text-gray-400">2026/08/17 – 08/20 &nbsp;·&nbsp; 庫克山</p>
-            </div>
-            <div class="text-right shrink-0">
-              <p class="text-sm text-gray-400">費用待定</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 皇后鎮 -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-sm font-bold text-gray-700">Airbnb</span>
-                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
-              </div>
-              <p class="text-sm text-gray-400">2026/08/20 – 08/24 &nbsp;·&nbsp; 皇后鎮</p>
-            </div>
-            <div class="text-right shrink-0">
-              <p class="text-sm text-gray-400">費用待定</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 北島 -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-sm font-bold text-gray-700">Airbnb</span>
-                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
-              </div>
-              <p class="text-sm text-gray-400">2026/08/24 – 08/26 &nbsp;·&nbsp; 北島（哈比村 / 陶波 / 羅托魯瓦周邊）</p>
-            </div>
-            <div class="text-right shrink-0">
-              <p class="text-sm text-gray-400">費用待定</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 奧克蘭 -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-dashed border-gray-200">
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-sm font-bold text-gray-700">機場附近飯店</span>
-                <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-medium">待定</span>
-              </div>
-              <p class="text-sm text-gray-400">2026/08/26 – 08/27 &nbsp;·&nbsp; 奧克蘭</p>
-            </div>
-            <div class="text-right shrink-0">
-              <p class="text-sm text-gray-400">費用待定</p>
+              <p class="text-lg font-bold text-gray-800">$51,850</p>
+              <p class="text-xs text-green-600">已付 $51,850</p>
             </div>
           </div>
         </div>
 
       </div>
-
-      <!-- 已確認訂位總計 -->
-      <div class="bg-slate-100 rounded-2xl p-4 flex justify-between items-center">
-        <div>
-          <span class="text-sm font-medium text-gray-600">已確認訂位總計</span>
-          <p class="text-xs text-gray-400 mt-0.5">交通 $75,826 + 住宿 $155,560</p>
-        </div>
-        <span class="text-xl font-bold text-gray-800">$231,386</span>
-      </div>
-
     </section>
 
     <!-- ══════════════════════════════
@@ -426,10 +241,8 @@
     <section id="costs">
       <h2 class="text-xl font-bold text-gray-800 mb-6">💰 費用分攤</h2>
 
-      <!-- 家庭小計卡片 -->
       <div class="grid grid-cols-2 gap-4 mb-8">
 
-        <!-- 哲宇家 -->
         <div id="cost-card-zeyu" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <h3 class="font-bold text-gray-800 mb-4">哲宇家</h3>
           <div class="space-y-1.5 text-sm mb-4">
@@ -443,7 +256,6 @@
           <p class="f-pct text-xs text-gray-400 mt-1.5">已付 60.6%</p>
         </div>
 
-        <!-- 聖閔家 -->
         <div id="cost-card-shengmin" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <h3 class="font-bold text-gray-800 mb-4">聖閔家</h3>
           <div class="space-y-1.5 text-sm mb-4">
@@ -459,7 +271,6 @@
 
       </div>
 
-      <!-- 費用明細表 -->
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
@@ -475,7 +286,7 @@
                 <th class="px-4 py-3 text-left font-semibold">備註</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-50">
+            <tbody id="cost-table-body" class="divide-y divide-gray-50">
               <tr class="hover:bg-slate-50">
                 <td class="px-4 py-3 font-medium text-gray-700">基督城住宿</td>
                 <td class="px-4 py-3 text-right text-gray-600">$51,850</td>
@@ -516,7 +327,6 @@
                 <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$3,583</span></td>
                 <td class="px-4 py-3 text-gray-400 text-xs">10,748/3家</td>
               </tr>
-              <!-- 合計列 -->
               <tr class="bg-slate-50 font-semibold">
                 <td class="px-4 py-3 text-gray-700">合計</td>
                 <td class="px-4 py-3 text-right text-gray-700">$85,504</td>
@@ -534,27 +344,15 @@
     </section>
 
     <!-- ══════════════════════════════
-         Section 4：地圖
+         Section 4：路線總覽地圖
     ══════════════════════════════ -->
     <section id="map">
-      <h2 class="text-xl font-bold text-gray-800 mb-6">🗺 路線地圖</h2>
-
-      <!-- 圖例 -->
+      <h2 class="text-xl font-bold text-gray-800 mb-4">🗺 路線總覽</h2>
       <div class="flex flex-wrap gap-4 mb-4 text-xs text-gray-500">
         <div class="flex items-center gap-1.5"><span class="inline-block w-6 h-0.5 bg-blue-500 rounded"></span>開車路段</div>
         <div class="flex items-center gap-1.5"><span class="inline-block w-6 border-t-2 border-dashed border-purple-400"></span>飛機段</div>
-        <div class="flex items-center gap-1.5">
-          <span class="inline-flex w-5 h-5 rounded-full bg-blue-500 text-white text-xs items-center justify-center font-bold">1</span>
-          南島停靠點
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="inline-flex w-5 h-5 rounded-full bg-purple-500 text-white text-xs items-center justify-center font-bold">5</span>
-          北島停靠點
-        </div>
       </div>
-
-      <div id="leaflet-map" class="rounded-2xl overflow-hidden shadow-sm border border-gray-100" style="height: 460px;"></div>
-
+      <div id="overview-map" class="rounded-2xl overflow-hidden shadow-sm border border-gray-100" style="height: 460px;"></div>
       <div class="flex flex-wrap gap-2 mt-3 text-xs text-gray-500">
         <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">① 基督城</span>
         <span class="text-gray-300">→</span>
@@ -578,12 +376,11 @@
          Section 5：AI 景點介紹
     ══════════════════════════════ -->
     <section id="spots">
-      <h2 class="text-xl font-bold text-gray-800 mb-2">📍 景點介紹</h2>
-      <p class="text-sm text-gray-400 mb-6">由 AI 自動生成，地點變更時自動更新</p>
-      <div id="spots-container" class="space-y-4">
-        <!-- 由 data.json 動態載入 -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center text-gray-300">
-          <p>景點介紹載入中…</p>
+      <h2 class="text-xl font-bold text-gray-800 mb-1">📍 景點介紹</h2>
+      <p class="text-sm text-gray-400 mb-6">由 AI 自動生成 · 地點變動時自動更新</p>
+      <div id="spots-container" class="grid sm:grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center text-gray-300 sm:col-span-2">
+          <p class="text-sm">景點介紹載入中…</p>
         </div>
       </div>
     </section>
@@ -596,103 +393,327 @@
   </footer>
 
   <script>
-    // ── Tab 高亮 ──
-    const sections = document.querySelectorAll('section[id]');
-    const tabs = document.querySelectorAll('.tab-link');
-    const observer = new IntersectionObserver(entries => {
+  // ── Tab 高亮 ──────────────────────────────────────────────────────────
+  const sections = document.querySelectorAll('section[id]');
+  const tabLinks = document.querySelectorAll('.tab-link');
+  const tabObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tabLinks.forEach(t => t.classList.remove('active'));
+        const a = document.querySelector(`.tab-link[href="#${entry.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => tabObserver.observe(s));
+
+  // ── 地理座標對照 ──────────────────────────────────────────────────────
+  const GEO = {
+    '台北':       [25.033, 121.565],
+    '桃園':       [25.013, 121.468],
+    '基督城':     [-43.532, 172.636],
+    'Lake Tekapo':[-44.005, 170.480],
+    'Tekpo':      [-44.005, 170.480],
+    'Tekapo':     [-44.005, 170.480],
+    'Mt. Cook':   [-43.739, 170.097],
+    'Mt.Cook':    [-43.739, 170.097],
+    '庫克山':     [-43.739, 170.097],
+    '皇后鎮':     [-45.031, 168.663],
+    '奧克蘭':     [-36.849, 174.763],
+    '北島':       [-38.200, 176.000],
+    '羅托魯瓦':   [-38.137, 176.250],
+    '哈比村':     [-37.752, 175.677],
+    '陶波':       [-38.685, 176.082],
+  };
+
+  function resolveCoords(str) {
+    for (const [k, v] of Object.entries(GEO)) {
+      if (str.includes(k)) return v;
+    }
+    return null;
+  }
+
+  // 取目的地座標（路線最後一段）
+  function destCoords(location) {
+    const parts = location.replace(/→/g, '-').split('-').map(p => p.trim()).filter(Boolean);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const c = resolveCoords(parts[i]);
+      if (c) return c;
+    }
+    return resolveCoords(location);
+  }
+
+  // 模糊匹配 AI 介紹
+  function findAi(location, aiContent) {
+    if (!aiContent) return null;
+    for (const [k, v] of Object.entries(aiContent)) {
+      if (location.includes(k)) return { name: k, ...v };
+    }
+    const parts = location.replace(/→/g, '-').split('-').map(p => p.trim()).filter(Boolean);
+    for (const p of [...parts].reverse()) {
+      for (const [k, v] of Object.entries(aiContent)) {
+        if (p.length > 1 && (p.includes(k) || k.includes(p))) return { name: k, ...v };
+      }
+    }
+    return null;
+  }
+
+  // ── 行程地圖初始化 ────────────────────────────────────────────────────
+  const iMap = L.map('itinerary-map', { zoomControl: true }).setView([-41.5, 172.5], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://openstreetmap.org">OSM</a>',
+    maxZoom: 18
+  }).addTo(iMap);
+
+  function makeMarkerIcon(num, color, active) {
+    const bg = active ? '#1d4ed8' : color;
+    return L.divIcon({
+      className: '',
+      html: `<div style="position:relative;width:30px;height:30px">
+        <div style="position:absolute;inset:0;border-radius:50%;background:${bg};
+             color:white;font-size:12px;font-weight:700;display:flex;
+             align-items:center;justify-content:center;
+             border:2.5px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25);">${num}</div>
+      </div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+    });
+  }
+
+  const iMarkers = {};
+  let iPhases = [];
+  let activeIdx = -1;
+
+  function highlightPhase(idx) {
+    if (idx === activeIdx) return;
+    activeIdx = idx;
+
+    // 更新卡片高亮
+    document.querySelectorAll('.phase-card').forEach(c => c.classList.remove('active'));
+    const card = document.querySelector(`.phase-card[data-idx="${idx}"]`);
+    if (card) card.classList.add('active');
+
+    // 更新地圖標記顏色
+    iPhases.forEach(p => {
+      if (!iMarkers[p.idx]) return;
+      const isNorth = p.coords && p.coords[0] > -41;
+      const base = isNorth ? '#7C3AED' : '#2563EB';
+      iMarkers[p.idx].setIcon(makeMarkerIcon(p.stopNum, p.idx === idx ? '#1d4ed8' : base, p.idx === idx));
+    });
+
+    // 更新地圖下方資訊欄
+    const p = iPhases.find(ph => ph.idx === idx);
+    const bar = document.getElementById('map-phase-bar');
+    if (p && bar) {
+      bar.classList.remove('hidden');
+      document.getElementById('map-bar-badge').textContent = p.date || '–';
+      document.getElementById('map-bar-loc').textContent   = p.location;
+      const acts = [p.activity, ...(p.sub_activities || []).map(s => s.activity)].filter(Boolean);
+      document.getElementById('map-bar-act').textContent   = acts.slice(0, 2).join(' · ') + (acts.length > 2 ? ' …' : '');
+    }
+  }
+
+  // ── 行程卡片渲染 ──────────────────────────────────────────────────────
+  function renderPhases(itinerary, aiContent) {
+    if (!itinerary || itinerary.length === 0) return; // 保留 loading placeholder
+
+    const container = document.getElementById('phase-cards');
+    let stopNum = 0;
+
+    iPhases = itinerary.map((item, i) => {
+      const coords = destCoords(item.location);
+      const ai     = findAi(item.location, aiContent);
+      const isNorth = coords && coords[0] > -41;
+      if (coords) stopNum++;
+      return { ...item, idx: i, stopNum: coords ? stopNum : null, coords, ai, isNorth };
+    });
+
+    // 畫路線
+    const south = iPhases.filter(p => p.coords && !p.isNorth).map(p => p.coords);
+    const north = iPhases.filter(p => p.coords && p.isNorth).map(p => p.coords);
+    const lastSouth = south[south.length - 1];
+    const firstNorth = north[0];
+
+    if (south.length > 1) L.polyline(south, { color:'#2563EB', weight:3, opacity:0.7 }).addTo(iMap);
+    if (north.length > 1) L.polyline(north, { color:'#7C3AED', weight:3, opacity:0.7 }).addTo(iMap);
+    if (lastSouth && firstNorth)
+      L.polyline([lastSouth, firstNorth], { color:'#7C3AED', weight:2.5, opacity:0.6, dashArray:'10 8' }).addTo(iMap);
+
+    // 建立標記
+    iPhases.forEach(p => {
+      if (!p.coords) return;
+      const color = p.isNorth ? '#7C3AED' : '#2563EB';
+      const marker = L.marker(p.coords, { icon: makeMarkerIcon(p.stopNum, color, false) })
+        .bindPopup(`<div style="min-width:120px"><b>${p.location}</b><br>
+          <span style="color:#6b7280;font-size:12px">${p.date || ''}</span></div>`)
+        .addTo(iMap)
+        .on('click', () => {
+          const card = document.querySelector(`.phase-card[data-idx="${p.idx}"]`);
+          if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          highlightPhase(p.idx);
+        });
+      iMarkers[p.idx] = marker;
+    });
+
+    // 渲染卡片 HTML
+    container.innerHTML = iPhases.map(p => {
+      const isFlight   = p.location.includes('→') && (p.activity || '').match(/\d+:\d+/);
+      const badgeColor = isFlight    ? 'text-blue-500 bg-blue-50'
+                       : p.isNorth  ? 'text-purple-500 bg-purple-50'
+                       :              'text-teal-600 bg-teal-50';
+      const dotColor   = isFlight    ? '#3B82F6'
+                       : p.isNorth  ? '#7C3AED'
+                       :              '#0D9488';
+
+      const subList = (p.sub_activities || []).map(s =>
+        `<li class="flex gap-1.5"><span class="text-gray-300 shrink-0">·</span><span>${s.activity}${s.note ? `<span class="text-gray-300"> — ${s.note}</span>` : ''}</span></li>`
+      ).join('');
+
+      const noteHtml = p.note ? `<p class="text-xs text-gray-400 mt-2 leading-relaxed">${p.note.replace(/\n/g, ' · ')}</p>` : '';
+
+      const aiHtml = p.ai ? `
+        <div class="ai-always mt-3 pt-3 border-t border-gray-50">
+          <p class="text-xs text-gray-300 mb-1.5 flex items-center gap-1">🗺 AI 景點介紹</p>
+          <p class="text-sm text-gray-500 leading-relaxed">${p.ai.intro}</p>
+          <p class="text-xs text-gray-400 mt-2">💡 ${p.ai.tips}</p>
+        </div>` : '';
+
+      const numBadge = p.stopNum
+        ? `<span class="w-6 h-6 rounded-full text-white text-xs flex items-center justify-center font-bold shrink-0 leading-none"
+                style="background:${dotColor}">${p.stopNum}</span>`
+        : `<span class="w-2 h-2 rounded-full shrink-0 mt-1" style="background:${dotColor}"></span>`;
+
+      return `
+        <div class="phase-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100"
+             data-idx="${p.idx}" ${p.coords ? `data-coords="[${p.coords}]"` : ''}>
+          <div class="flex items-start gap-2.5">
+            ${numBadge}
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                ${p.date ? `<span class="text-xs font-semibold ${badgeColor} px-2 py-0.5 rounded-full">${p.date}</span>` : ''}
+                <span class="font-semibold text-gray-800 leading-tight">${p.location}</span>
+              </div>
+              ${p.activity ? `<p class="text-sm text-gray-500">${p.activity}</p>` : ''}
+              ${subList ? `<ul class="mt-1.5 space-y-1 text-sm text-gray-500">${subList}</ul>` : ''}
+              ${noteHtml}
+              ${aiHtml}
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // 卡片點擊 → 地圖 pan
+    container.querySelectorAll('.phase-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const idx = parseInt(card.dataset.idx);
+        const p   = iPhases[idx];
+        if (p && p.coords) {
+          const zoom = p.location.length > 6 && p.location.includes('-') ? 8 : 10;
+          iMap.flyTo(p.coords, zoom, { duration: 1.0 });
+          iMarkers[idx]?.openPopup();
+        }
+        highlightPhase(idx);
+      });
+    });
+
+    // Intersection Observer：滾動到卡片時自動 pan（僅桌機）
+    const isDesktop = () => window.innerWidth >= 1024;
+    const cardObserver = new IntersectionObserver(entries => {
+      if (!isDesktop()) return;
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          tabs.forEach(t => t.classList.remove('active'));
-          const active = document.querySelector(`.tab-link[href="#${entry.target.id}"]`);
-          if (active) active.classList.add('active');
+          const idx = parseInt(entry.target.dataset.idx);
+          const p   = iPhases[idx];
+          if (p && p.coords) {
+            iMap.flyTo(p.coords, 9, { duration: 0.9 });
+          }
+          highlightPhase(idx);
         }
       });
-    }, { rootMargin: '-30% 0px -60% 0px' });
-    sections.forEach(s => observer.observe(s));
+    }, { rootMargin: '-20% 0px -65% 0px', threshold: 0 });
 
-    // ── data.json 動態載入 ──
-    fetch('./data.json').then(r => r.json()).then(d => {
-      // 最後更新時間
-      document.querySelectorAll('.last-updated').forEach(el => el.textContent = d.last_updated);
+    container.querySelectorAll('.phase-card').forEach(c => cardObserver.observe(c));
 
-      // 費用卡片：更新數字與進度條
-      ['zeyu','shengmin'].forEach(key => {
-        const f = d.cost_summary[key];
-        if (!f) return;
-        const card = document.getElementById(`cost-card-${key}`);
-        if (!card) return;
-        const fmt = n => '$' + Number(n).toLocaleString('zh-TW');
-        card.querySelector('.f-owed').textContent      = fmt(f.owed);
-        card.querySelector('.f-paid').textContent      = fmt(f.paid);
-        card.querySelector('.f-remaining').textContent = fmt(f.remaining);
-        card.querySelector('.f-bar').style.width       = f.pct + '%';
-        card.querySelector('.f-pct').textContent       = `已付 ${f.pct}%`;
-      });
+    // 初始高亮第一個有座標的卡片
+    const first = iPhases.find(p => p.coords);
+    if (first) {
+      iMap.setView(first.coords, 6);
+      highlightPhase(first.idx);
+    }
+  }
 
-      // AI 景點介紹
-      const spotsEl = document.getElementById('spots-container');
-      if (spotsEl && d.ai_content) {
-        const icons = { '基督城':'🏙','Lake Tekapo':'⛰','Mt. Cook':'🏔','皇后鎮':'🎿','羅托魯瓦':'🌋','奧克蘭':'🌆' };
-        spotsEl.innerHTML = Object.entries(d.ai_content).map(([name, c]) => `
-          <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <h3 class="font-bold text-gray-800 mb-2">${icons[name] || '📍'} ${name}</h3>
-            <p class="text-sm text-gray-500 leading-relaxed">${c.intro}</p>
-            <p class="text-xs text-gray-400 mt-3">💡 Tip：${c.tips}</p>
-          </div>`).join('');
-      }
-    }).catch(() => {});
+  // ── 總覽地圖（Section 4）────────────────────────────────────────────
+  const overviewStops = [
+    { name:'① 基督城',         coords:[-43.532,172.636], island:'south', date:'07/16 抵達' },
+    { name:'② Lake Tekapo',   coords:[-44.005,170.480], island:'south', date:'08/15–08/17' },
+    { name:'③ Mt. Cook',      coords:[-43.739,170.097], island:'south', date:'08/17–08/20' },
+    { name:'④ 皇后鎮',         coords:[-45.031,168.663], island:'south', date:'08/20–08/24' },
+    { name:'⑤ 奧克蘭（飛抵）', coords:[-36.849,174.763], island:'north', date:'08/24 飛抵' },
+    { name:'⑥ 哈比村',         coords:[-37.752,175.677], island:'north', date:'08/24–08/25' },
+    { name:'⑦ 羅托魯瓦',       coords:[-38.137,176.250], island:'north', date:'08/25–08/26' },
+    { name:'⑧ 奧克蘭（回程）', coords:[-36.849,174.763], island:'north', date:'08/26–08/27' },
+  ];
 
-    // ── Leaflet 地圖 ──
-    const stops = [
-      { name: '① 基督城',       coords: [-43.532, 172.636], island: 'south', date: '07/16 抵達' },
-      { name: '② Lake Tekapo', coords: [-44.005, 170.480], island: 'south', date: '08/15 – 08/17' },
-      { name: '③ Mt. Cook',    coords: [-43.739, 170.097], island: 'south', date: '08/17 – 08/20' },
-      { name: '④ 皇后鎮',       coords: [-45.031, 168.663], island: 'south', date: '08/20 – 08/24' },
-      { name: '⑤ 奧克蘭（飛抵）', coords: [-36.849, 174.763], island: 'north', date: '08/24 飛抵' },
-      { name: '⑥ 哈比村',       coords: [-37.752, 175.677], island: 'north', date: '08/24 – 08/25' },
-      { name: '⑦ 羅托魯瓦',     coords: [-38.137, 176.250], island: 'north', date: '08/25 – 08/26' },
-      { name: '⑧ 奧克蘭（回程）', coords: [-36.849, 174.763], island: 'north', date: '08/26 – 08/27' },
-    ];
+  const oMap = L.map('overview-map').setView([-40.5, 172.5], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>'
+  }).addTo(oMap);
+  L.polyline(overviewStops.slice(0,4).map(s=>s.coords), { color:'#2563EB', weight:3.5, opacity:0.75 }).addTo(oMap);
+  L.polyline([overviewStops[3].coords, overviewStops[4].coords], { color:'#7C3AED', weight:2.5, opacity:0.65, dashArray:'10 8' }).addTo(oMap);
+  L.polyline(overviewStops.slice(4).map(s=>s.coords), { color:'#7C3AED', weight:3.5, opacity:0.75 }).addTo(oMap);
+  overviewStops.forEach((s, i) => {
+    const isNorth = s.island === 'north';
+    const color = isNorth ? '#7C3AED' : '#2563EB';
+    L.marker(s.coords, {
+      icon: L.divIcon({
+        className:'',
+        html:`<div style="width:28px;height:28px;border-radius:50%;background:${color};
+              color:white;font-size:11px;font-weight:700;display:flex;
+              align-items:center;justify-content:center;border:2.5px solid white;
+              box-shadow:0 2px 8px rgba(0,0,0,0.25);">${i+1}</div>`,
+        iconSize:[28,28], iconAnchor:[14,14]
+      })
+    }).bindPopup(`<div style="min-width:130px"><b>${s.name}</b><br>
+      <span style="color:#6b7280;font-size:12px">${s.date}</span></div>`).addTo(oMap);
+  });
 
-    const map = L.map('leaflet-map').setView([-40.5, 172.5], 5);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
-    }).addTo(map);
+  // ── data.json 動態載入 ──────────────────────────────────────────────
+  fetch('./data.json').then(r => r.json()).then(d => {
+    // 最後更新時間
+    document.querySelectorAll('.last-updated').forEach(el => el.textContent = d.last_updated);
 
-    // 南島開車路線（實線）
-    L.polyline(stops.slice(0,4).map(s => s.coords), {
-      color: '#2563EB', weight: 3.5, opacity: 0.75
-    }).addTo(map);
-
-    // 皇后鎮 → 奧克蘭 飛機（虛線）
-    L.polyline([stops[3].coords, stops[4].coords], {
-      color: '#7C3AED', weight: 2.5, opacity: 0.65, dashArray: '10 8'
-    }).addTo(map);
-
-    // 北島開車路線（實線）
-    L.polyline(stops.slice(4).map(s => s.coords), {
-      color: '#7C3AED', weight: 3.5, opacity: 0.75
-    }).addTo(map);
-
-    // 標記
-    stops.forEach((stop, i) => {
-      const isFlight = i === 4;
-      const isNorth = stop.island === 'north';
-      const color = isNorth ? '#7C3AED' : '#2563EB';
-      const icon = L.divIcon({
-        className: '',
-        html: `<div style="width:28px;height:28px;border-radius:50%;background:${color};
-               color:white;font-size:11px;font-weight:700;display:flex;
-               align-items:center;justify-content:center;border:2.5px solid white;
-               box-shadow:0 2px 8px rgba(0,0,0,0.25);">${i + 1}</div>`,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-      });
-      L.marker(stop.coords, { icon })
-        .bindPopup(`<div style="min-width:130px"><b>${stop.name}</b><br>
-          <span style="color:#6b7280;font-size:12px">${stop.date}</span></div>`)
-        .addTo(map);
+    // 費用卡片
+    ['zeyu','shengmin'].forEach(key => {
+      const f = d.cost_summary && d.cost_summary[key];
+      if (!f) return;
+      const card = document.getElementById(`cost-card-${key}`);
+      if (!card) return;
+      const fmt = n => '$' + Number(n).toLocaleString('zh-TW');
+      card.querySelector('.f-owed').textContent      = fmt(f.owed);
+      card.querySelector('.f-paid').textContent      = fmt(f.paid);
+      card.querySelector('.f-remaining').textContent = fmt(f.remaining);
+      card.querySelector('.f-bar').style.width       = f.pct + '%';
+      card.querySelector('.f-pct').textContent       = `已付 ${f.pct}%`;
     });
+
+    // 行程分欄
+    if (d.itinerary && d.itinerary.length > 0) {
+      document.getElementById('phase-loading')?.remove();
+      renderPhases(d.itinerary, d.ai_content);
+    }
+
+    // AI 景點介紹（Section 5）
+    const spotsEl = document.getElementById('spots-container');
+    if (spotsEl && d.ai_content && Object.keys(d.ai_content).length > 0) {
+      const icons = { '基督城':'🏙','Lake Tekapo':'⛰','Mt. Cook':'🏔','皇后鎮':'🎿','羅托魯瓦':'🌋','奧克蘭':'🌆','北島':'🌿' };
+      spotsEl.innerHTML = Object.entries(d.ai_content).map(([name, c]) => `
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h3 class="font-bold text-gray-800 mb-2">${icons[name] || '📍'} ${name}</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">${c.intro}</p>
+          <p class="text-xs text-gray-400 mt-3">💡 Tip：${c.tips}</p>
+        </div>`).join('');
+    }
+  }).catch(() => {});
   </script>
 
 </body>
