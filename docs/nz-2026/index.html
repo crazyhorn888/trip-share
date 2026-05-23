@@ -571,11 +571,13 @@
 
       const noteHtml = p.note ? `<p class="text-xs text-gray-400 mt-2 leading-relaxed">${p.note.replace(/\n/g, ' · ')}</p>` : '';
 
-      const aiHtml = p.ai ? `
-        <div class="ai-always mt-3 pt-3 border-t border-gray-50">
-          <p class="text-xs text-gray-300 mb-1.5 flex items-center gap-1">🗺 AI 景點介紹</p>
-          <p class="text-sm text-gray-500 leading-relaxed">${p.ai.intro}</p>
-          <p class="text-xs text-gray-400 mt-2">💡 ${p.ai.tips}</p>
+      const skipAi = ['台北', '桃園', '台灣'].some(s => p.location.includes(s));
+      const aiText = (!skipAi && p.ai)
+        ? (p.ai.intro || '').match(/[^。！？!?]+[。！？!?]*/g)?.slice(0, 3).join('').trim()
+        : null;
+      const aiHtml = aiText ? `
+        <div class="ai-always mt-2 pt-2 border-t border-gray-50">
+          <p class="text-xs text-gray-400 leading-relaxed">${aiText}</p>
         </div>` : '';
 
       const numBadge = p.stopNum

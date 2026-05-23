@@ -75,7 +75,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const d = $input.item.json;\nconst prompt = '請用繁體中文為以下景點各寫一段介紹（每個景點約 150 字，包含簡介、必看亮點、1-2 個實用 tips）。\\n\\n景點列表：' + d.new_locations.join('、') + '\\n\\n請以 JSON 格式回覆，格式範例：{ \"景點名\": { \"intro\": \"介紹內容\", \"tips\": \"Tip 內容\" } }。只回傳 JSON，不要其他說明文字。';\n\nreturn [{ json: { ...d, openai_body: { model: 'gpt-4o-mini', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] } } }];"
+        "jsCode": "const d = $input.item.json;\nconst prompt = '請用繁體中文為以下景點各寫一段簡短介紹。每個景點只需 3 句話以內，重點放在「這個地方是什麼、最值得去的理由、一個實用小提醒」。\\n\\n景點列表：' + d.new_locations.join('、') + '\\n\\n請以 JSON 格式回覆，格式範例：{ \"景點名\": { \"intro\": \"3句以內的介紹\" } }。只回傳 JSON，不要其他說明文字。';\n\nreturn [{ json: { ...d, openai_body: { model: 'gpt-4o-mini', max_tokens: 1024, messages: [{ role: 'user', content: prompt }] } } }];"
       },
       "id": "n6a-prep-openai",
       "name": "組合 OpenAI 請求",
