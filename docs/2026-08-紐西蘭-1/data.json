@@ -2,7 +2,7 @@
   "trip_name": "2026.08 紐西蘭-1",
   "trip_id": "2026-08-紐西蘭-1",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/05/24 上午01:08",
+  "last_updated": "2026/05/24 上午01:10",
   "locations": [
     "基督城",
     "Lake Tekpo",
@@ -25,7 +25,7 @@
       "date": "2026/7/20-8/15",
       "location": "基督城",
       "activity": "上課",
-      "note": "住: 155560 / 三家庭\n生活開支: 待定",
+      "note": "生活開支: 待定",
       "sub_activities": [],
       "is_main": true
     },
@@ -33,7 +33,7 @@
       "date": "2026/8/15-8/17",
       "location": "基督城- Lake Tekpo",
       "activity": "牧羊人教堂",
-      "note": "住: Lake Edge Holiday Park \n($$: 君 15137)\n($$: 聖閔+哲宇: 23884)",
+      "note": "住: Lake Edge Holiday Park",
       "sub_activities": [
         {
           "activity": "Mt.John Observatory (可報名晚上觀星團)",
