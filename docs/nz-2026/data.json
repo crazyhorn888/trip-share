@@ -2,7 +2,7 @@
   "trip_name": "2026.08 紐西蘭 2",
   "trip_id": "nz-2026",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/05/24 上午12:13",
+  "last_updated": "2026/05/24 上午12:17",
   "locations": [
     "基督城",
     "Lake Tekpo",
@@ -141,17 +141,17 @@
   "cost_summary": {
     "zeyu": {
       "name": "哲宇家",
-      "owed": 155294,
-      "paid": 121640,
-      "remaining": 33654,
-      "pct": 78.3
+      "owed": 257685,
+      "paid": 177613,
+      "remaining": 80072,
+      "pct": 68.9
     },
     "shengmin": {
       "name": "聖閔家",
-      "owed": 97446,
-      "paid": 81627,
-      "remaining": 15819,
-      "pct": 83.8
+      "owed": 179547,
+      "paid": 114258,
+      "remaining": 65289,
+      "pct": 63.6
     }
   },
   "ai_content": {
