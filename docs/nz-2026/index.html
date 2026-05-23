@@ -557,7 +557,7 @@
 
     // 渲染卡片 HTML
     container.innerHTML = iPhases.map(p => {
-      const isFlight   = p.location.includes('→') && (p.activity || '').match(/\d+:\d+/);
+      const isFlight   = !!(p.activity || '').match(/\d{1,2}:\d{2}/);
       const badgeColor = isFlight    ? 'text-blue-500 bg-blue-50'
                        : p.isNorth  ? 'text-purple-500 bg-purple-50'
                        :              'text-teal-600 bg-teal-50';
