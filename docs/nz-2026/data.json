@@ -1,8 +1,8 @@
 {
-  "trip_name": "2026.08 紐西蘭 2",
+  "trip_name": "2026.08 紐西蘭-1",
   "trip_id": "nz-2026",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/05/24 上午12:28",
+  "last_updated": "2026/05/24 上午03:06",
   "locations": [
     "基督城",
     "Lake Tekpo",
@@ -25,7 +25,7 @@
       "date": "2026/7/20-8/15",
       "location": "基督城",
       "activity": "上課",
-      "note": "住: 155560 / 三家庭\n生活開支: 待定",
+      "note": "生活開支: 待定",
       "sub_activities": [],
       "is_main": true
     },
@@ -33,7 +33,7 @@
       "date": "2026/8/15-8/17",
       "location": "基督城- Lake Tekpo",
       "activity": "牧羊人教堂",
-      "note": "住: Lake Edge Holiday Park \n($$: 君 15137)\n($$: 聖閔+哲宇: 23884)",
+      "note": "住: Lake Edge Holiday Park",
       "sub_activities": [
         {
           "activity": "Mt.John Observatory (可報名晚上觀星團)",
@@ -50,7 +50,7 @@
       "date": "2026/8/17-8/19",
       "location": "Mt. Cook",
       "activity": "冰川飛行 (KLOOK訂購)",
-      "note": "住: Haka House Hostel Aoraki Mt Cook\n($$: 君/聖閔: 6*3970 = 23820)\n($$: 哲宇: 4*4358 = 17432)",
+      "note": "住: Haka House Hostel Aoraki Mt Cook",
       "sub_activities": [
         {
           "activity": "Tasman Glacier Walk",
@@ -71,7 +71,7 @@
       "date": "2026/8/19-8/23",
       "location": "皇后鎮",
       "activity": "跳傘/峽谷盪鞦韆",
-      "note": "住: Airbnb Whakata on Whitbourn ($$: 115623)",
+      "note": "住: Airbnb Whakata on Whitbourn",
       "sub_activities": [
         {
           "activity": "滑車",
@@ -108,7 +108,7 @@
       "date": "2026/8/23-25",
       "location": "北島",
       "activity": "哈比村",
-      "note": "住: Agoda Rydges Rotorua \n($$: 21592/三家)",
+      "note": "住: Agoda Rydges Rotorua",
       "sub_activities": [
         {
           "activity": "陶波",
