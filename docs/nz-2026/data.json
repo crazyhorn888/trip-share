@@ -2,7 +2,7 @@
   "trip_name": "2026.08 紐西蘭 2",
   "trip_id": "nz-2026",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/05/24 上午12:21",
+  "last_updated": "2026/05/24 上午12:23",
   "locations": [
     "基督城",
     "Lake Tekpo",
@@ -25,7 +25,7 @@
       "date": "2026/7/20-8/15",
       "location": "基督城",
       "activity": "上課",
-      "note": "住: 155560 / 三家庭\n租車: 待定\n生活開支: 待定",
+      "note": "住: 155560 / 三家庭\n生活開支: 待定",
       "sub_activities": [],
       "is_main": true
     },
@@ -100,7 +100,7 @@
       "date": "2026/08/23",
       "location": "皇后鎮-奧克蘭",
       "activity": "10:35-12:25",
-      "note": "機票: 待訂 ($$: 待定, 0203時價:3655/人)\n租車: 待定 ($$: 待定)",
+      "note": "",
       "sub_activities": [],
       "is_main": true
     },
