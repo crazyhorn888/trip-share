@@ -33,7 +33,7 @@
         <a href="../" class="text-blue-500 hover:text-blue-700 text-sm font-medium shrink-0">← 所有行程</a>
         <span class="text-gray-200">|</span>
         <span class="font-semibold text-gray-700 truncate">🇳🇿 2026 紐西蘭</span>
-        <span class="ml-auto text-xs text-gray-400 shrink-0">更新：2026-05-22</span>
+        <span class="last-updated ml-auto text-xs text-gray-400 shrink-0">更新：載入中…</span>
       </div>
       <nav class="flex gap-5 text-sm font-medium text-gray-400 overflow-x-auto pb-0 -mb-px">
         <a href="#itinerary" class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap active">🗓 行程</a>
@@ -430,31 +430,31 @@
       <div class="grid grid-cols-2 gap-4 mb-8">
 
         <!-- 哲宇家 -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <div id="cost-card-zeyu" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <h3 class="font-bold text-gray-800 mb-4">哲宇家</h3>
           <div class="space-y-1.5 text-sm mb-4">
-            <div class="flex justify-between text-gray-500"><span>應付</span><span class="font-medium text-gray-700">$85,504</span></div>
-            <div class="flex justify-between text-gray-500"><span>已付</span><span class="font-medium text-green-600">$51,850</span></div>
-            <div class="flex justify-between text-gray-500"><span>未付</span><span class="font-medium text-amber-600">$33,654</span></div>
+            <div class="flex justify-between text-gray-500"><span>應付</span><span class="f-owed font-medium text-gray-700">$85,504</span></div>
+            <div class="flex justify-between text-gray-500"><span>已付</span><span class="f-paid font-medium text-green-600">$51,850</span></div>
+            <div class="flex justify-between text-gray-500"><span>未付</span><span class="f-remaining font-medium text-amber-600">$33,654</span></div>
           </div>
           <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
-            <div class="progress-fill bg-blue-500 h-2 rounded-full" style="width: 60.6%"></div>
+            <div class="f-bar progress-fill bg-blue-500 h-2 rounded-full" style="width: 60.6%"></div>
           </div>
-          <p class="text-xs text-gray-400 mt-1.5">已付 60.6%</p>
+          <p class="f-pct text-xs text-gray-400 mt-1.5">已付 60.6%</p>
         </div>
 
         <!-- 聖閔家 -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <div id="cost-card-shengmin" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <h3 class="font-bold text-gray-800 mb-4">聖閔家</h3>
           <div class="space-y-1.5 text-sm mb-4">
-            <div class="flex justify-between text-gray-500"><span>應付</span><span class="font-medium text-gray-700">$85,504</span></div>
-            <div class="flex justify-between text-gray-500"><span>已付</span><span class="font-medium text-green-600">$51,850</span></div>
-            <div class="flex justify-between text-gray-500"><span>未付</span><span class="font-medium text-amber-600">$33,654</span></div>
+            <div class="flex justify-between text-gray-500"><span>應付</span><span class="f-owed font-medium text-gray-700">$85,504</span></div>
+            <div class="flex justify-between text-gray-500"><span>已付</span><span class="f-paid font-medium text-green-600">$51,850</span></div>
+            <div class="flex justify-between text-gray-500"><span>未付</span><span class="f-remaining font-medium text-amber-600">$33,654</span></div>
           </div>
           <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
-            <div class="progress-fill bg-blue-500 h-2 rounded-full" style="width: 60.6%"></div>
+            <div class="f-bar progress-fill bg-blue-500 h-2 rounded-full" style="width: 60.6%"></div>
           </div>
-          <p class="text-xs text-gray-400 mt-1.5">已付 60.6%</p>
+          <p class="f-pct text-xs text-gray-400 mt-1.5">已付 60.6%</p>
         </div>
 
       </div>
@@ -580,45 +580,18 @@
     <section id="spots">
       <h2 class="text-xl font-bold text-gray-800 mb-2">📍 景點介紹</h2>
       <p class="text-sm text-gray-400 mb-6">由 AI 自動生成，地點變更時自動更新</p>
-      <div class="space-y-4">
-
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <h3 class="font-bold text-gray-800 mb-2">🏙 基督城（Christchurch）</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">紐西蘭南島最大城市，以「花園城市」著稱。市區保有歐式建築風情，基督教堂廣場是地標。2011 年大地震後城市積極重建，現有許多新穎的藝術裝置與貨櫃商場（Re:START Mall）。推薦搭乘復古電車遊市區，或前往植物園散步。</p>
-          <p class="text-xs text-gray-400 mt-3">💡 Tip：從機場前往市中心約 20 分鐘，可租車或搭 Metro Bus</p>
+      <div id="spots-container" class="space-y-4">
+        <!-- 由 data.json 動態載入 -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center text-gray-300">
+          <p>景點介紹載入中…</p>
         </div>
-
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <h3 class="font-bold text-gray-800 mb-2">⛰ Lake Tekapo（蒂卡波湖）</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">以湖水的夢幻藍色和絕佳星空聞名，是國際暗夜保護區的一部分。牧羊人教堂（Church of the Good Shepherd）是紐西蘭最多人拍照的地標之一。Mt. John 天文台提供夜間觀星導覽，強烈推薦提前預訂。</p>
-          <p class="text-xs text-gray-400 mt-3">💡 Tip：觀星團建議提前 2 週以上預約，冬季（8 月）能見度最佳</p>
-        </div>
-
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <h3 class="font-bold text-gray-800 mb-2">🏔 Mt. Cook（庫克山）</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">紐西蘭最高峰（3,724 公尺），也是登山家艾德蒙·希拉里爵士練習攀登珠穆朗瑪峰的地方。塔斯曼冰川飛行可從空中俯瞰冰原，Hooker Valley Track 健行步道全長 10 公里來回，終點可看到庫克山倒映在湖面上，是必走路線。</p>
-          <p class="text-xs text-gray-400 mt-3">💡 Tip：Hooker Valley Track 起伏不大，帶孩子也可走，建議早上出發避開下午強風</p>
-        </div>
-
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <h3 class="font-bold text-gray-800 mb-2">🎿 皇后鎮（Queenstown）</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">紐西蘭冒險活動之都，跳傘、高空彈跳、峽谷鞦韆一應俱全。冬季滑雪（Remarkables 或 Coronet Peak 雪場）是熱門活動。米爾福峽灣（Milford Sound）一日遊從皇后鎮出發約 4 小時，是南島必訪景點，建議提早訂位。</p>
-          <p class="text-xs text-gray-400 mt-3">💡 Tip：ONSEN 溫泉禁止 5 歲以下兒童，有小孩的家庭需注意</p>
-        </div>
-
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <h3 class="font-bold text-gray-800 mb-2">🌋 羅托魯瓦（Rotorua）</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">北島的地熱奇景城市，空氣中帶有硫磺味。Wai-O-Tapu 地熱公園有大量彩色溫泉和間歇泉，Te Puia 毛利文化村可體驗傳統歌舞表演與地熱景觀。陶波（Taupo）附近的胡卡瀑布水量磅礡，開車前往約 1 小時。</p>
-          <p class="text-xs text-gray-400 mt-3">💡 Tip：哈比村（Hobbiton）在 Matamata，從羅托魯瓦出發約 1 小時，強烈建議提前網路訂票</p>
-        </div>
-
       </div>
     </section>
 
   </main>
 
   <footer class="text-center text-xs text-gray-300 py-10 border-t border-gray-100 mt-4">
-    由 Numbers 自動同步 &nbsp;·&nbsp; 最後更新：2026-05-22 &nbsp;·&nbsp;
+    由 Numbers 自動同步 &nbsp;·&nbsp; 最後更新：<span class="last-updated">-</span> &nbsp;·&nbsp;
     <a href="../" class="text-blue-300 hover:underline">← 所有行程</a>
   </footer>
 
@@ -636,6 +609,38 @@
       });
     }, { rootMargin: '-30% 0px -60% 0px' });
     sections.forEach(s => observer.observe(s));
+
+    // ── data.json 動態載入 ──
+    fetch('./data.json').then(r => r.json()).then(d => {
+      // 最後更新時間
+      document.querySelectorAll('.last-updated').forEach(el => el.textContent = d.last_updated);
+
+      // 費用卡片：更新數字與進度條
+      ['zeyu','shengmin'].forEach(key => {
+        const f = d.cost_summary[key];
+        if (!f) return;
+        const card = document.getElementById(`cost-card-${key}`);
+        if (!card) return;
+        const fmt = n => '$' + Number(n).toLocaleString('zh-TW');
+        card.querySelector('.f-owed').textContent      = fmt(f.owed);
+        card.querySelector('.f-paid').textContent      = fmt(f.paid);
+        card.querySelector('.f-remaining').textContent = fmt(f.remaining);
+        card.querySelector('.f-bar').style.width       = f.pct + '%';
+        card.querySelector('.f-pct').textContent       = `已付 ${f.pct}%`;
+      });
+
+      // AI 景點介紹
+      const spotsEl = document.getElementById('spots-container');
+      if (spotsEl && d.ai_content) {
+        const icons = { '基督城':'🏙','Lake Tekapo':'⛰','Mt. Cook':'🏔','皇后鎮':'🎿','羅托魯瓦':'🌋','奧克蘭':'🌆' };
+        spotsEl.innerHTML = Object.entries(d.ai_content).map(([name, c]) => `
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+            <h3 class="font-bold text-gray-800 mb-2">${icons[name] || '📍'} ${name}</h3>
+            <p class="text-sm text-gray-500 leading-relaxed">${c.intro}</p>
+            <p class="text-xs text-gray-400 mt-3">💡 Tip：${c.tips}</p>
+          </div>`).join('');
+      }
+    }).catch(() => {});
 
     // ── Leaflet 地圖 ──
     const stops = [

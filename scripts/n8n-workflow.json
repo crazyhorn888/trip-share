@@ -1,0 +1,313 @@
+{
+  "name": "Trip Sync - Numbers to GitHub Pages",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "trip-sync",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "n1-webhook",
+      "name": "收到同步請求",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// 計算費用總計、hash、格式化時間\nconst payload = $input.item.json.body;\n\nconst costItems = payload.cost_split || [];\nconst summary = {\n  zeyu:     { name: '哲宇家', owed: 0, paid: 0, remaining: 0, pct: 0 },\n  shengmin: { name: '聖閔家', owed: 0, paid: 0, remaining: 0, pct: 0 }\n};\n\nfor (const item of costItems) {\n  summary.zeyu.owed     += parseFloat(item.zeyu_owed     || 0);\n  summary.zeyu.paid     += parseFloat(item.zeyu_paid     || 0);\n  summary.shengmin.owed += parseFloat(item.shengmin_owed || 0);\n  summary.shengmin.paid += parseFloat(item.shengmin_paid || 0);\n}\n\nfor (const f of Object.values(summary)) {\n  f.remaining = Math.round(f.owed - f.paid);\n  f.pct = f.owed > 0 ? Math.round(f.paid / f.owed * 1000) / 10 : 0;\n}\n\n// 地點 hash：排序後 join\nconst locationHash = [...(payload.locations || [])].sort().join('|');\n\n// 台北時間\nconst now = new Date().toLocaleString('zh-TW', {\n  timeZone: 'Asia/Taipei',\n  year: 'numeric', month: '2-digit', day: '2-digit',\n  hour: '2-digit', minute: '2-digit'\n});\n\nreturn [{ json: { ...payload, cost_summary: summary, location_hash: locationHash, last_updated: now } }];"
+      },
+      "id": "n2-derive",
+      "name": "計算衍生資料",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $json.trip_id }}/cache.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": { "response": { "neverError": true } }
+        }
+      },
+      "id": "n3-get-cache",
+      "name": "讀取 cache.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "credentials": {
+        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tripData = $('計算衍生資料').item.json;\nconst cacheResp = $input.item.json;\n\nlet cached = { location_hash: '', ai_content: {} };\nlet cacheSha = null;\n\nif (cacheResp.sha && cacheResp.content) {\n  cacheSha = cacheResp.sha;\n  try {\n    cached = JSON.parse(Buffer.from(cacheResp.content, 'base64').toString('utf-8'));\n  } catch(e) {}\n}\n\n// 找出沒有 AI 介紹的新地點\nconst newLocations = (tripData.locations || [])\n  .filter(loc => !(loc in (cached.ai_content || {})));\n\nreturn [{ json: {\n  ...tripData,\n  cached_ai:    cached.ai_content || {},\n  cache_sha:    cacheSha,\n  new_locations: newLocations,\n  needs_ai:     newLocations.length > 0\n} }];"
+      },
+      "id": "n4-check-hash",
+      "name": "比對 hash",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [{
+            "id": "c1",
+            "leftValue": "={{ $json.needs_ai }}",
+            "rightValue": true,
+            "operator": { "type": "boolean", "operation": "equals" }
+          }],
+          "combinator": "and"
+        }
+      },
+      "id": "n5-if-ai",
+      "name": "需要 AI 更新？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type",      "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "rawBody",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 2048, messages: [{ role: 'user', content: '請用繁體中文為以下紐西蘭景點各寫一段介紹（每個景點約 150 字，包含簡介、必看亮點、1-2 個實用 tips）。\\n\\n景點列表：' + $json.new_locations.join('、') + '\\n\\n請以 JSON 格式回覆，格式範例：{ \"景點名\": { \"intro\": \"介紹內容\", \"tips\": \"Tip 內容\" } }。只回傳 JSON，不要其他說明文字。' }] }) }}",
+        "options": {}
+      },
+      "id": "n6-claude",
+      "name": "呼叫 Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 160],
+      "credentials": {
+        "httpHeaderAuth": { "id": "FILL_IN_CLAUDE_CRED_ID", "name": "Claude API Key" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tripData = $('比對 hash').item.json;\nconst claudeResp = $input.item.json;\n\nlet newAI = {};\ntry {\n  const rawText = claudeResp.content[0].text.trim();\n  // 擷取 JSON 區塊（Claude 可能包在 markdown code block）\n  const match = rawText.match(/\\{[\\s\\S]*\\}/);\n  if (match) newAI = JSON.parse(match[0]);\n} catch(e) {\n  console.log('AI parse error:', e.message);\n}\n\nreturn [{ json: {\n  ...tripData,\n  ai_content: { ...tripData.cached_ai, ...newAI },\n  ai_updated: true,\n  ai_new_count: Object.keys(newAI).length\n} }];"
+      },
+      "id": "n7-merge-ai",
+      "name": "合併 AI 內容",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 160]
+    },
+    {
+      "parameters": {
+        "jsCode": "const tripData = $input.item.json;\nreturn [{ json: { ...tripData, ai_content: tripData.cached_ai, ai_updated: false, ai_new_count: 0 } }];"
+      },
+      "id": "n8-use-cache",
+      "name": "使用快取 AI",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 440]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "output": "input1"
+      },
+      "id": "n9-merge",
+      "name": "合流",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.item.json;\n\n// 組合 data.json（供網頁讀取）\nconst dataJson = {\n  trip_name:    d.trip_name,\n  trip_id:      d.trip_id,\n  date_range:   d.date_range,\n  last_updated: d.last_updated,\n  locations:    d.locations,\n  cost_summary: d.cost_summary,\n  ai_content:   d.ai_content\n};\n\n// 組合 cache.json（供下次比對）\nconst cacheJson = {\n  location_hash: d.location_hash,\n  locations:     d.locations,\n  ai_content:    d.ai_content,\n  updated_at:    d.last_updated\n};\n\nreturn [{ json: {\n  ...d,\n  data_json_b64:  Buffer.from(JSON.stringify(dataJson, null, 2)).toString('base64'),\n  cache_json_b64: Buffer.from(JSON.stringify(cacheJson, null, 2)).toString('base64')\n} }];"
+      },
+      "id": "n10-build-json",
+      "name": "組合 JSON 檔案",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2000, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $json.trip_id }}/data.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": { "response": { "neverError": true } }
+        }
+      },
+      "id": "n11-get-data-sha",
+      "name": "取得 data.json SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2220, 300],
+      "credentials": {
+        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('組合 JSON 檔案').item.json;\nconst shaResp = $input.item.json;\n\nconst putBody = {\n  message: `sync(${d.trip_id}): ${d.last_updated}${d.ai_updated ? ' [AI updated ' + d.ai_new_count + ' spots]' : ''}`,\n  content: d.data_json_b64,\n  ...(shaResp.sha ? { sha: shaResp.sha } : {})\n};\n\nreturn [{ json: { ...d, data_put_body: putBody } }];"
+      },
+      "id": "n12-prep-data-put",
+      "name": "準備 data.json PUT",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2440, 300]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $('組合 JSON 檔案').item.json.trip_id }}/data.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.data_put_body }}",
+        "options": {}
+      },
+      "id": "n13-put-data",
+      "name": "推送 data.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2660, 300],
+      "credentials": {
+        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $('組合 JSON 檔案').item.json.trip_id }}/cache.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": { "response": { "neverError": true } }
+        }
+      },
+      "id": "n14-get-cache-sha",
+      "name": "取得 cache.json SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2880, 300],
+      "credentials": {
+        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('組合 JSON 檔案').item.json;\nconst shaResp = $input.item.json;\n\nconst putBody = {\n  message: `cache(${d.trip_id}): update location hash`,\n  content: d.cache_json_b64,\n  ...(shaResp.sha ? { sha: shaResp.sha } : {})\n};\n\nreturn [{ json: { ...d, cache_put_body: putBody } }];"
+      },
+      "id": "n15-prep-cache-put",
+      "name": "準備 cache.json PUT",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3100, 300]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $('組合 JSON 檔案').item.json.trip_id }}/cache.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.cache_put_body }}",
+        "options": {}
+      },
+      "id": "n16-put-cache",
+      "name": "推送 cache.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3320, 300],
+      "credentials": {
+        "httpHeaderAuth": { "id": "FILL_IN_GITHUB_CRED_ID", "name": "GitHub Token" }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'ok', trip_id: $('組合 JSON 檔案').item.json.trip_id, updated: $('組合 JSON 檔案').item.json.last_updated, ai_updated: $('組合 JSON 檔案').item.json.ai_updated, ai_new_count: $('組合 JSON 檔案').item.json.ai_new_count }) }}",
+        "options": {}
+      },
+      "id": "n17-respond",
+      "name": "回傳成功",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [3540, 300]
+    }
+  ],
+  "connections": {
+    "收到同步請求": {
+      "main": [[{ "node": "計算衍生資料", "type": "main", "index": 0 }]]
+    },
+    "計算衍生資料": {
+      "main": [[{ "node": "讀取 cache.json", "type": "main", "index": 0 }]]
+    },
+    "讀取 cache.json": {
+      "main": [[{ "node": "比對 hash", "type": "main", "index": 0 }]]
+    },
+    "比對 hash": {
+      "main": [[{ "node": "需要 AI 更新？", "type": "main", "index": 0 }]]
+    },
+    "需要 AI 更新？": {
+      "main": [
+        [{ "node": "呼叫 Claude API", "type": "main", "index": 0 }],
+        [{ "node": "使用快取 AI",     "type": "main", "index": 0 }]
+      ]
+    },
+    "呼叫 Claude API": {
+      "main": [[{ "node": "合併 AI 內容", "type": "main", "index": 0 }]]
+    },
+    "合併 AI 內容": {
+      "main": [[{ "node": "合流", "type": "main", "index": 0 }]]
+    },
+    "使用快取 AI": {
+      "main": [[{ "node": "合流", "type": "main", "index": 1 }]]
+    },
+    "合流": {
+      "main": [[{ "node": "組合 JSON 檔案", "type": "main", "index": 0 }]]
+    },
+    "組合 JSON 檔案": {
+      "main": [[{ "node": "取得 data.json SHA", "type": "main", "index": 0 }]]
+    },
+    "取得 data.json SHA": {
+      "main": [[{ "node": "準備 data.json PUT", "type": "main", "index": 0 }]]
+    },
+    "準備 data.json PUT": {
+      "main": [[{ "node": "推送 data.json", "type": "main", "index": 0 }]]
+    },
+    "推送 data.json": {
+      "main": [[{ "node": "取得 cache.json SHA", "type": "main", "index": 0 }]]
+    },
+    "取得 cache.json SHA": {
+      "main": [[{ "node": "準備 cache.json PUT", "type": "main", "index": 0 }]]
+    },
+    "準備 cache.json PUT": {
+      "main": [[{ "node": "推送 cache.json", "type": "main", "index": 0 }]]
+    },
+    "推送 cache.json": {
+      "main": [[{ "node": "回傳成功", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "travel", "createdAt": "2026-05-23" }]
+}
