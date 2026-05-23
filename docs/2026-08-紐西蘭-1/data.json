@@ -2,7 +2,7 @@
   "trip_name": "2026.08 紐西蘭-1",
   "trip_id": "2026-08-紐西蘭-1",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/05/24 上午01:11",
+  "last_updated": "2026/05/24 上午03:01",
   "locations": [
     "基督城",
     "Lake Tekpo",
@@ -108,7 +108,7 @@
       "date": "2026/8/23-25",
       "location": "北島",
       "activity": "哈比村",
-      "note": "住: Agoda Rydges Rotorua \n($$: 21592/三家)",
+      "note": "住: Agoda Rydges Rotorua",
       "sub_activities": [
         {
           "activity": "陶波",
