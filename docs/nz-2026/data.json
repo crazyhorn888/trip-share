@@ -2,11 +2,10 @@
   "trip_name": "2026.08 紐西蘭 2",
   "trip_id": "nz-2026",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/05/24 上午12:07",
+  "last_updated": "2026/05/24 上午12:13",
   "locations": [
     "基督城",
     "Lake Tekpo",
-    "待定(彈性)",
     "Mt. Cook",
     "皇后鎮",
     "奧克蘭",
@@ -34,7 +33,7 @@
       "date": "2026/8/15-8/17",
       "location": "基督城- Lake Tekpo",
       "activity": "牧羊人教堂",
-      "note": "住: Lake Edge Holiday Park ($$: 待定)",
+      "note": "住: Lake Edge Holiday Park \n($$: 君 15137)\n($$: 聖閔+哲宇: 23884)",
       "sub_activities": [
         {
           "activity": "Mt.John Observatory (可報名晚上觀星團)",
@@ -48,18 +47,10 @@
       "is_main": true
     },
     {
-      "date": "2026/8/16-8/17",
-      "location": "待定(彈性)",
-      "activity": "可Tekpo或Mt.Cook選擇多一天",
-      "note": "",
-      "sub_activities": [],
-      "is_main": true
-    },
-    {
-      "date": "2026/8/17-8/20",
+      "date": "2026/8/17-8/19",
       "location": "Mt. Cook",
       "activity": "冰川飛行 (KLOOK訂購)",
-      "note": "住: Mt. Cook Motel ($$: 待定)",
+      "note": "住: Haka House Hostel Aoraki Mt Cook\n($$: 君/聖閔: 6*3970 = 23820)\n($$: 哲宇: 4*4358 = 17432)",
       "sub_activities": [
         {
           "activity": "Tasman Glacier Walk",
@@ -77,10 +68,10 @@
       "is_main": true
     },
     {
-      "date": "2026/8/20-8/24",
+      "date": "2026/8/19-8/23",
       "location": "皇后鎮",
       "activity": "跳傘/峽谷盪鞦韆",
-      "note": "住: Airbnb ($$: 待定)",
+      "note": "住: Airbnb Whakata on Whitbourn ($$: 115623)",
       "sub_activities": [
         {
           "activity": "滑車",
@@ -106,18 +97,18 @@
       "is_main": true
     },
     {
-      "date": "2026/08/24",
+      "date": "2026/08/23",
       "location": "皇后鎮-奧克蘭",
-      "activity": "10:25-11:20",
-      "note": "機票: 待訂 ($$: 待定)\n租車: 待定 ($$: 待定)",
+      "activity": "10:35-12:25",
+      "note": "機票: 待訂 ($$: 待定, 0203時價:3655/人)\n租車: 待定 ($$: 待定)",
       "sub_activities": [],
       "is_main": true
     },
     {
-      "date": "2026/8/24-26",
+      "date": "2026/8/23-25",
       "location": "北島",
       "activity": "哈比村",
-      "note": "住: Airbnb ($$: 待定)",
+      "note": "住: Agoda Rydges Rotorua \n($$: 21592/三家)",
       "sub_activities": [
         {
           "activity": "陶波",
@@ -131,10 +122,10 @@
       "is_main": true
     },
     {
-      "date": "2026/8/26-27",
+      "date": "2026/8/25-27",
       "location": "羅托魯瓦-奧克蘭",
       "activity": "City Walk",
-      "note": "住: 機場附近, 待定 ($$: 待定)\n還車 (or 8/27), 待定",
+      "note": "住： Agoda Holiday Inn Auckland Airport by IHG \n還車 (or 8/27), 待定",
       "sub_activities": [],
       "is_main": true
     },
@@ -150,17 +141,17 @@
   "cost_summary": {
     "zeyu": {
       "name": "哲宇家",
-      "owed": 85504,
-      "paid": 51850,
+      "owed": 155294,
+      "paid": 121640,
       "remaining": 33654,
-      "pct": 60.6
+      "pct": 78.3
     },
     "shengmin": {
       "name": "聖閔家",
-      "owed": 85504,
-      "paid": 69685,
+      "owed": 97446,
+      "paid": 81627,
       "remaining": 15819,
-      "pct": 81.5
+      "pct": 83.8
     }
   },
   "ai_content": {
