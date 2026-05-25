@@ -184,56 +184,7 @@
               </tr>
             </thead>
             <tbody id="cost-table-body" class="divide-y divide-gray-50">
-              <tr class="hover:bg-slate-50">
-                <td class="px-4 py-3 font-medium text-gray-700">基督城住宿</td>
-                <td class="px-4 py-3 text-right text-gray-600">$51,850</td>
-                <td class="px-4 py-3 text-right text-green-600 font-medium">$51,850</td>
-                <td class="px-4 py-3 text-right"><span class="text-green-600 font-semibold">✓ 0</span></td>
-                <td class="px-4 py-3 text-right text-gray-600">$51,850</td>
-                <td class="px-4 py-3 text-right text-green-600 font-medium">$51,850</td>
-                <td class="px-4 py-3 text-right"><span class="text-green-600 font-semibold">✓ 0</span></td>
-                <td class="px-4 py-3 text-gray-400 text-xs">51,850/家</td>
-              </tr>
-              <tr class="hover:bg-slate-50">
-                <td class="px-4 py-3 font-medium text-gray-700">國內航空機票</td>
-                <td class="px-4 py-3 text-right text-gray-600">$17,835</td>
-                <td class="px-4 py-3 text-right text-gray-400">$0</td>
-                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$17,835</span></td>
-                <td class="px-4 py-3 text-right text-gray-600">$17,835</td>
-                <td class="px-4 py-3 text-right text-gray-400">$0</td>
-                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$17,835</span></td>
-                <td class="px-4 py-3 text-gray-400 text-xs"></td>
-              </tr>
-              <tr class="hover:bg-slate-50">
-                <td class="px-4 py-3 font-medium text-gray-700">租車 07/17–08/23</td>
-                <td class="px-4 py-3 text-right text-gray-600">$12,236</td>
-                <td class="px-4 py-3 text-right text-gray-400">$0</td>
-                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$12,236</span></td>
-                <td class="px-4 py-3 text-right text-gray-600">$12,236</td>
-                <td class="px-4 py-3 text-right text-gray-400">$0</td>
-                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$12,236</span></td>
-                <td class="px-4 py-3 text-gray-400 text-xs">36,707/3家</td>
-              </tr>
-              <tr class="hover:bg-slate-50">
-                <td class="px-4 py-3 font-medium text-gray-700">租車 08/14–08/23</td>
-                <td class="px-4 py-3 text-right text-gray-600">$3,583</td>
-                <td class="px-4 py-3 text-right text-gray-400">$0</td>
-                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$3,583</span></td>
-                <td class="px-4 py-3 text-right text-gray-600">$3,583</td>
-                <td class="px-4 py-3 text-right text-gray-400">$0</td>
-                <td class="px-4 py-3 text-right"><span class="text-amber-600 font-semibold">$3,583</span></td>
-                <td class="px-4 py-3 text-gray-400 text-xs">10,748/3家</td>
-              </tr>
-              <tr class="bg-slate-50 font-semibold">
-                <td class="px-4 py-3 text-gray-700">合計</td>
-                <td class="px-4 py-3 text-right text-gray-700">$85,504</td>
-                <td class="px-4 py-3 text-right text-green-600">$51,850</td>
-                <td class="px-4 py-3 text-right text-amber-600">$33,654</td>
-                <td class="px-4 py-3 text-right text-gray-700">$85,504</td>
-                <td class="px-4 py-3 text-right text-green-600">$51,850</td>
-                <td class="px-4 py-3 text-right text-amber-600">$33,654</td>
-                <td class="px-4 py-3"></td>
-              </tr>
+              <tr><td colspan="8" class="px-4 py-6 text-center text-sm text-gray-300">費用資料載入中…</td></tr>
             </tbody>
           </table>
         </div>
@@ -594,6 +545,42 @@
       card.querySelector('.f-bar').style.width       = f.pct + '%';
       card.querySelector('.f-pct').textContent       = `已付 ${f.pct}%`;
     });
+
+    // 費用明細表格
+    const tbody = document.getElementById('cost-table-body');
+    if (tbody && d.cost_split && d.cost_split.length > 0) {
+      const fmt = n => '$' + Number(n || 0).toLocaleString('zh-TW');
+      const remCell = (owed, paid) => {
+        const r = Number(owed || 0) - Number(paid || 0);
+        return r <= 0
+          ? `<span class="text-green-600 font-semibold">✓ 0</span>`
+          : `<span class="text-amber-600 font-semibold">${fmt(r)}</span>`;
+      };
+      const rows = d.cost_split.map(row => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-4 py-3 font-medium text-gray-700">${row.item}</td>
+          <td class="px-4 py-3 text-right text-gray-600">${row.zeyu_owed ? fmt(row.zeyu_owed) : ''}</td>
+          <td class="px-4 py-3 text-right ${row.zeyu_paid > 0 ? 'text-green-600 font-medium' : 'text-gray-400'}">${row.zeyu_paid ? fmt(row.zeyu_paid) : '$0'}</td>
+          <td class="px-4 py-3 text-right">${remCell(row.zeyu_owed, row.zeyu_paid)}</td>
+          <td class="px-4 py-3 text-right text-gray-600">${row.shengmin_owed ? fmt(row.shengmin_owed) : ''}</td>
+          <td class="px-4 py-3 text-right ${row.shengmin_paid > 0 ? 'text-green-600 font-medium' : 'text-gray-400'}">${row.shengmin_paid ? fmt(row.shengmin_paid) : '$0'}</td>
+          <td class="px-4 py-3 text-right">${remCell(row.shengmin_owed, row.shengmin_paid)}</td>
+          <td class="px-4 py-3 text-gray-400 text-xs">${row.note || ''}</td>
+        </tr>`).join('');
+      const cs = d.cost_summary || {};
+      const total = `
+        <tr class="bg-slate-50 font-semibold">
+          <td class="px-4 py-3 text-gray-700">合計</td>
+          <td class="px-4 py-3 text-right text-gray-700">${fmt(cs.zeyu?.owed)}</td>
+          <td class="px-4 py-3 text-right text-green-600">${fmt(cs.zeyu?.paid)}</td>
+          <td class="px-4 py-3 text-right text-amber-600">${fmt(cs.zeyu?.remaining)}</td>
+          <td class="px-4 py-3 text-right text-gray-700">${fmt(cs.shengmin?.owed)}</td>
+          <td class="px-4 py-3 text-right text-green-600">${fmt(cs.shengmin?.paid)}</td>
+          <td class="px-4 py-3 text-right text-amber-600">${fmt(cs.shengmin?.remaining)}</td>
+          <td class="px-4 py-3"></td>
+        </tr>`;
+      tbody.innerHTML = rows + total;
+    }
 
     // 行程分欄
     if (d.itinerary && d.itinerary.length > 0) {

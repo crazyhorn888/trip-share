@@ -126,7 +126,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const d = $input.item.json;\n\nconst dataJson = {\n  trip_name:    d.trip_name,\n  trip_id:      d.trip_id,\n  date_range:   d.date_range,\n  last_updated: d.last_updated,\n  locations:    d.locations,\n  itinerary:    d.itinerary || [],\n  cost_summary: d.cost_summary,\n  ai_content:   d.ai_content\n};\n\nconst cacheJson = {\n  location_hash: d.location_hash,\n  locations:     d.locations,\n  ai_content:    d.ai_content,\n  updated_at:    d.last_updated\n};\n\nreturn [{ json: {\n  ...d,\n  data_json_b64:  Buffer.from(JSON.stringify(dataJson, null, 2)).toString('base64'),\n  cache_json_b64: Buffer.from(JSON.stringify(cacheJson, null, 2)).toString('base64')\n} }];"
+        "jsCode": "const d = $input.item.json;\n\nconst dataJson = {\n  trip_name:    d.trip_name,\n  trip_id:      d.trip_id,\n  date_range:   d.date_range,\n  last_updated: d.last_updated,\n  locations:    d.locations,\n  itinerary:    d.itinerary || [],\n  cost_summary: d.cost_summary,\n  cost_split:   d.cost_split || [],\n  ai_content:   d.ai_content\n};\n\nconst cacheJson = {\n  location_hash: d.location_hash,\n  locations:     d.locations,\n  ai_content:    d.ai_content,\n  updated_at:    d.last_updated\n};\n\nreturn [{ json: {\n  ...d,\n  data_json_b64:  Buffer.from(JSON.stringify(dataJson, null, 2)).toString('base64'),\n  cache_json_b64: Buffer.from(JSON.stringify(cacheJson, null, 2)).toString('base64')\n} }];"
       },
       "id": "n10-build-json",
       "name": "組合 JSON 檔案",
