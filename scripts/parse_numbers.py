@@ -63,9 +63,9 @@ def parse_sheet_as_dicts(doc, sheet_name: str) -> list:
     return []
 
 def parse_settings_sheet(doc) -> dict:
-    """讀取「設定」工作表第一列資料（欄位名稱→值）"""
+    """讀取「sysenv」工作表第一列資料（欄位名稱→值）"""
     for sheet in doc.sheets:
-        if sheet.name == "設定":
+        if sheet.name == "sysenv":
             table = list(sheet.tables)[0]
             rows  = list(table.rows())
             if len(rows) < 2:
@@ -215,6 +215,11 @@ def main():
             continue
 
         settings    = parse_settings_sheet(doc)
+
+        if str(settings.get("publish", "1")).strip() == "0":
+            print(f"[sync] ⏭ {nf.name} publish=0，跳過")
+            continue
+
         trip_id     = get_trip_id(settings, nf.name)
         trip_name   = str(settings.get("trip_name", nf.stem)).strip() or nf.stem
         trip_emoji  = str(settings.get("emoji",     "✈️")).strip()
