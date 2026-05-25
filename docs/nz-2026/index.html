@@ -13,7 +13,6 @@
     .tab-link.active { color: #2563EB; border-bottom-color: #2563EB; }
     .progress-fill { transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
 
-    /* 行程分欄 */
     .phase-card {
       cursor: pointer;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
@@ -23,17 +22,8 @@
       border-color: #2563EB;
       box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
     }
-    .phase-card .ai-section {
-      display: none;
-    }
-    .phase-card.active .ai-section,
-    .phase-card:hover .ai-section {
-      display: block;
-    }
-    /* 始終顯示 AI 介紹 */
     .phase-card .ai-always { display: block; }
 
-    /* 地圖脈動標記 */
     @keyframes pulse-ring {
       0%   { transform: scale(1);   opacity: 0.7; }
       100% { transform: scale(2.2); opacity: 0; }
@@ -61,10 +51,9 @@
         <span class="last-updated ml-auto text-xs text-gray-400 shrink-0">更新：載入中…</span>
       </div>
       <nav class="flex gap-5 text-sm font-medium text-gray-400 overflow-x-auto pb-0 -mb-px">
-        <a href="#itinerary" class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap active">🗓 行程</a>
+        <a href="#map"       class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap active">🗺 路線總覽</a>
+        <a href="#itinerary" class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">🗓 行程</a>
         <a href="#costs"     class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">💰 費用分攤</a>
-        <a href="#map"       class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">🗺 地圖</a>
-        <a href="#spots"     class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">📍 景點</a>
       </nav>
     </div>
   </header>
@@ -80,15 +69,40 @@
       <span class="self-start sm:self-auto bg-blue-50 text-blue-600 text-sm px-3 py-1 rounded-full font-medium">規劃中</span>
     </div>
 
-    <!-- ══════════════════════════════
-         Section 1：行程（左地圖 + 右卡片）
-    ══════════════════════════════ -->
+    <!-- ══ Section 1：路線總覽 ══ -->
+    <section id="map">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">🗺 路線總覽</h2>
+      <div class="flex flex-wrap gap-4 mb-4 text-xs text-gray-500">
+        <div class="flex items-center gap-1.5"><span class="inline-block w-6 h-0.5 bg-blue-500 rounded"></span>開車路段</div>
+        <div class="flex items-center gap-1.5"><span class="inline-block w-6 border-t-2 border-dashed border-purple-400"></span>飛機段</div>
+      </div>
+      <div id="overview-map" class="rounded-2xl overflow-hidden shadow-sm border border-gray-100" style="height: 460px;"></div>
+      <div class="flex flex-wrap gap-2 mt-3 text-xs text-gray-500">
+        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">① 基督城</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">② Lake Tekapo</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">③ Mt. Cook</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">④ 皇后鎮</span>
+        <span class="text-gray-300">✈→</span>
+        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑤ 奧克蘭</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑥ 哈比村</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑦ 羅托魯瓦</span>
+        <span class="text-gray-300">→</span>
+        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑧ 奧克蘭（回程）</span>
+      </div>
+    </section>
+
+    <!-- ══ Section 2：行程（左地圖 + 右卡片）══ -->
     <section id="itinerary">
       <h2 class="text-xl font-bold text-gray-800 mb-5">🗓 行程</h2>
 
       <div class="flex flex-col lg:flex-row gap-5 lg:items-start">
 
-        <!-- ── 左：Sticky 地圖 ── -->
+        <!-- ── 左：Sticky 互動地圖 ── -->
         <div class="lg:w-[44%] lg:flex-shrink-0 lg:sticky lg:top-24 lg:self-start">
           <div id="itinerary-map"
                class="rounded-2xl overflow-hidden border border-gray-100 shadow-sm w-full"
@@ -121,7 +135,6 @@
         <!-- ── 右：可捲動行程卡片 ── -->
         <div class="lg:flex-1 min-w-0">
           <div id="phase-cards" class="space-y-3">
-            <!-- 載入中 placeholder -->
             <div id="phase-loading" class="bg-white rounded-2xl p-8 border border-gray-100 text-center text-gray-300">
               <p class="text-sm">行程資料載入中…</p>
               <p class="text-xs mt-1 text-gray-200">儲存 Numbers 檔案後自動更新</p>
@@ -132,9 +145,7 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════
-         Section 3：費用分攤
-    ══════════════════════════════ -->
+    <!-- ══ Section 3：費用分攤 ══ -->
     <section id="costs">
       <h2 class="text-xl font-bold text-gray-800 mb-6">💰 費用分攤</h2>
 
@@ -143,27 +154,27 @@
         <div id="cost-card-zeyu" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <h3 class="font-bold text-gray-800 mb-4">哲宇家</h3>
           <div class="space-y-1.5 text-sm mb-4">
-            <div class="flex justify-between text-gray-500"><span>應付</span><span class="f-owed font-medium text-gray-700">$85,504</span></div>
-            <div class="flex justify-between text-gray-500"><span>已付</span><span class="f-paid font-medium text-green-600">$51,850</span></div>
-            <div class="flex justify-between text-gray-500"><span>未付</span><span class="f-remaining font-medium text-amber-600">$33,654</span></div>
+            <div class="flex justify-between text-gray-500"><span>應付</span><span class="f-owed font-medium text-gray-700">–</span></div>
+            <div class="flex justify-between text-gray-500"><span>已付</span><span class="f-paid font-medium text-green-600">–</span></div>
+            <div class="flex justify-between text-gray-500"><span>未付</span><span class="f-remaining font-medium text-amber-600">–</span></div>
           </div>
           <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
-            <div class="f-bar progress-fill bg-blue-500 h-2 rounded-full" style="width: 60.6%"></div>
+            <div class="f-bar progress-fill bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
           </div>
-          <p class="f-pct text-xs text-gray-400 mt-1.5">已付 60.6%</p>
+          <p class="f-pct text-xs text-gray-400 mt-1.5">載入中…</p>
         </div>
 
         <div id="cost-card-shengmin" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
           <h3 class="font-bold text-gray-800 mb-4">聖閔家</h3>
           <div class="space-y-1.5 text-sm mb-4">
-            <div class="flex justify-between text-gray-500"><span>應付</span><span class="f-owed font-medium text-gray-700">$85,504</span></div>
-            <div class="flex justify-between text-gray-500"><span>已付</span><span class="f-paid font-medium text-green-600">$51,850</span></div>
-            <div class="flex justify-between text-gray-500"><span>未付</span><span class="f-remaining font-medium text-amber-600">$33,654</span></div>
+            <div class="flex justify-between text-gray-500"><span>應付</span><span class="f-owed font-medium text-gray-700">–</span></div>
+            <div class="flex justify-between text-gray-500"><span>已付</span><span class="f-paid font-medium text-green-600">–</span></div>
+            <div class="flex justify-between text-gray-500"><span>未付</span><span class="f-remaining font-medium text-amber-600">–</span></div>
           </div>
           <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
-            <div class="f-bar progress-fill bg-blue-500 h-2 rounded-full" style="width: 60.6%"></div>
+            <div class="f-bar progress-fill bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
           </div>
-          <p class="f-pct text-xs text-gray-400 mt-1.5">已付 60.6%</p>
+          <p class="f-pct text-xs text-gray-400 mt-1.5">載入中…</p>
         </div>
 
       </div>
@@ -187,48 +198,6 @@
               <tr><td colspan="8" class="px-4 py-6 text-center text-sm text-gray-300">費用資料載入中…</td></tr>
             </tbody>
           </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════════
-         Section 4：路線總覽地圖
-    ══════════════════════════════ -->
-    <section id="map">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">🗺 路線總覽</h2>
-      <div class="flex flex-wrap gap-4 mb-4 text-xs text-gray-500">
-        <div class="flex items-center gap-1.5"><span class="inline-block w-6 h-0.5 bg-blue-500 rounded"></span>開車路段</div>
-        <div class="flex items-center gap-1.5"><span class="inline-block w-6 border-t-2 border-dashed border-purple-400"></span>飛機段</div>
-      </div>
-      <div id="overview-map" class="rounded-2xl overflow-hidden shadow-sm border border-gray-100" style="height: 460px;"></div>
-      <div class="flex flex-wrap gap-2 mt-3 text-xs text-gray-500">
-        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">① 基督城</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">② Lake Tekapo</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">③ Mt. Cook</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">④ 皇后鎮</span>
-        <span class="text-gray-300">✈→</span>
-        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑤ 奧克蘭</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑥ 哈比村</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑦ 羅托魯瓦</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑧ 奧克蘭（回程）</span>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════════
-         Section 5：AI 景點介紹
-    ══════════════════════════════ -->
-    <section id="spots">
-      <h2 class="text-xl font-bold text-gray-800 mb-1">📍 景點介紹</h2>
-      <p class="text-sm text-gray-400 mb-6">由 AI 自動生成 · 地點變動時自動更新</p>
-      <div id="spots-container" class="grid sm:grid-cols-2 gap-4">
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center text-gray-300 sm:col-span-2">
-          <p class="text-sm">景點介紹載入中…</p>
         </div>
       </div>
     </section>
@@ -281,7 +250,6 @@
     return null;
   }
 
-  // 取目的地座標（路線最後一段）
   function destCoords(location) {
     const parts = location.replace(/→/g, '-').split('-').map(p => p.trim()).filter(Boolean);
     for (let i = parts.length - 1; i >= 0; i--) {
@@ -291,7 +259,6 @@
     return resolveCoords(location);
   }
 
-  // 模糊匹配 AI 介紹
   function findAi(location, aiContent) {
     if (!aiContent) return null;
     for (const [k, v] of Object.entries(aiContent)) {
@@ -336,12 +303,10 @@
     if (idx === activeIdx) return;
     activeIdx = idx;
 
-    // 更新卡片高亮
     document.querySelectorAll('.phase-card').forEach(c => c.classList.remove('active'));
     const card = document.querySelector(`.phase-card[data-idx="${idx}"]`);
     if (card) card.classList.add('active');
 
-    // 更新地圖標記顏色
     iPhases.forEach(p => {
       if (!iMarkers[p.idx]) return;
       const isNorth = p.coords && p.coords[0] > -41;
@@ -349,7 +314,6 @@
       iMarkers[p.idx].setIcon(makeMarkerIcon(p.stopNum, p.idx === idx ? '#1d4ed8' : base, p.idx === idx));
     });
 
-    // 更新地圖下方資訊欄
     const p = iPhases.find(ph => ph.idx === idx);
     const bar = document.getElementById('map-phase-bar');
     if (p && bar) {
@@ -363,7 +327,7 @@
 
   // ── 行程卡片渲染 ──────────────────────────────────────────────────────
   function renderPhases(itinerary, aiContent) {
-    if (!itinerary || itinerary.length === 0) return; // 保留 loading placeholder
+    if (!itinerary || itinerary.length === 0) return;
 
     const container = document.getElementById('phase-cards');
     let stopNum = 0;
@@ -376,7 +340,6 @@
       return { ...item, idx: i, stopNum: coords ? stopNum : null, coords, ai, isNorth };
     });
 
-    // 畫路線
     const south = iPhases.filter(p => p.coords && !p.isNorth).map(p => p.coords);
     const north = iPhases.filter(p => p.coords && p.isNorth).map(p => p.coords);
     const lastSouth = south[south.length - 1];
@@ -387,7 +350,6 @@
     if (lastSouth && firstNorth)
       L.polyline([lastSouth, firstNorth], { color:'#7C3AED', weight:2.5, opacity:0.6, dashArray:'10 8' }).addTo(iMap);
 
-    // 建立標記
     iPhases.forEach(p => {
       if (!p.coords) return;
       const color = p.isNorth ? '#7C3AED' : '#2563EB';
@@ -403,7 +365,6 @@
       iMarkers[p.idx] = marker;
     });
 
-    // 渲染卡片 HTML
     container.innerHTML = iPhases.map(p => {
       const isFlight   = !!(p.activity || '').match(/\d{1,2}:\d{2}/);
       const badgeColor = isFlight    ? 'text-blue-500 bg-blue-50'
@@ -413,9 +374,33 @@
                        : p.isNorth  ? '#7C3AED'
                        :              '#0D9488';
 
-      const subList = (p.sub_activities || []).map(s =>
-        `<li class="flex gap-1.5"><span class="text-gray-300 shrink-0">·</span><span>${s.activity}${s.note ? `<span class="text-gray-300"> — ${s.note}</span>` : ''}</span></li>`
-      ).join('');
+      // sub_activities：有 AI 副標時顯示「地點 — 副標」+ 小字括號說明
+      const subtitles = p.ai?.spot_subtitles || {};
+      const subList = (p.sub_activities || []).map(s => {
+        const parenMatch = s.activity.match(/^(.*?)\s*[（(]([^）)]+)[）)](.*)$/);
+        const cleanName  = parenMatch ? (parenMatch[1] + (parenMatch[3] || '')).trim() : s.activity.trim();
+        const parenNote  = parenMatch ? parenMatch[2] : '';
+
+        let subtitle = null;
+        for (const [k, v] of Object.entries(subtitles)) {
+          if (cleanName.includes(k) || k.includes(cleanName.split(/[\s.]/)[0])) { subtitle = v; break; }
+        }
+
+        if (subtitle) {
+          const extra = [parenNote, s.note].filter(Boolean).join(' · ');
+          return `<li class="flex gap-1.5 items-start">
+            <span class="text-gray-300 shrink-0 mt-0.5">·</span>
+            <span>
+              <span class="font-medium text-gray-600">${cleanName}</span>
+              <span class="text-gray-300"> — </span>
+              <span class="text-gray-500 text-xs">${subtitle}</span>
+              ${extra ? `<span class="block text-xs text-gray-300 mt-0.5">${extra}</span>` : ''}
+            </span>
+          </li>`;
+        } else {
+          return `<li class="flex gap-1.5 items-start"><span class="text-gray-300 shrink-0">·</span><span>${s.activity}${s.note ? `<span class="text-gray-300"> — ${s.note}</span>` : ''}</span></li>`;
+        }
+      }).join('');
 
       const noteHtml = p.note ? `<p class="text-xs text-gray-400 mt-2 leading-relaxed">${p.note.replace(/\n/g, ' · ')}</p>` : '';
 
@@ -452,7 +437,6 @@
         </div>`;
     }).join('');
 
-    // 卡片點擊 → 地圖 pan
     container.querySelectorAll('.phase-card').forEach(card => {
       card.addEventListener('click', () => {
         const idx = parseInt(card.dataset.idx);
@@ -466,7 +450,6 @@
       });
     });
 
-    // Intersection Observer：滾動到卡片時自動 pan（僅桌機）
     const isDesktop = () => window.innerWidth >= 1024;
     const cardObserver = new IntersectionObserver(entries => {
       if (!isDesktop()) return;
@@ -484,7 +467,6 @@
 
     container.querySelectorAll('.phase-card').forEach(c => cardObserver.observe(c));
 
-    // 初始高亮第一個有座標的卡片
     const first = iPhases.find(p => p.coords);
     if (first) {
       iMap.setView(first.coords, 6);
@@ -492,7 +474,7 @@
     }
   }
 
-  // ── 總覽地圖（Section 4）────────────────────────────────────────────
+  // ── 路線總覽地圖（Section 1）────────────────────────────────────────
   const overviewStops = [
     { name:'① 基督城',         coords:[-43.532,172.636], island:'south', date:'07/16 抵達' },
     { name:'② Lake Tekapo',   coords:[-44.005,170.480], island:'south', date:'08/15–08/17' },
@@ -529,7 +511,6 @@
 
   // ── data.json 動態載入 ──────────────────────────────────────────────
   fetch('./data.json').then(r => r.json()).then(d => {
-    // 最後更新時間
     document.querySelectorAll('.last-updated').forEach(el => el.textContent = d.last_updated);
 
     // 費用卡片
@@ -582,22 +563,10 @@
       tbody.innerHTML = rows + total;
     }
 
-    // 行程分欄
+    // 行程卡片
     if (d.itinerary && d.itinerary.length > 0) {
       document.getElementById('phase-loading')?.remove();
       renderPhases(d.itinerary, d.ai_content);
-    }
-
-    // AI 景點介紹（Section 5）
-    const spotsEl = document.getElementById('spots-container');
-    if (spotsEl && d.ai_content && Object.keys(d.ai_content).length > 0) {
-      const icons = { '基督城':'🏙','Lake Tekapo':'⛰','Mt. Cook':'🏔','皇后鎮':'🎿','羅托魯瓦':'🌋','奧克蘭':'🌆','北島':'🌿' };
-      spotsEl.innerHTML = Object.entries(d.ai_content).map(([name, c]) => `
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <h3 class="font-bold text-gray-800 mb-2">${icons[name] || '📍'} ${name}</h3>
-          <p class="text-sm text-gray-500 leading-relaxed">${c.intro}</p>
-          <p class="text-xs text-gray-400 mt-3">💡 Tip：${c.tips}</p>
-        </div>`).join('');
     }
   }).catch(() => {});
   </script>
