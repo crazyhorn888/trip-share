@@ -54,6 +54,7 @@
         <a href="#map"       class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap active">🗺 路線總覽</a>
         <a href="#itinerary" class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">🗓 行程</a>
         <a href="#costs"     class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">💰 費用分攤</a>
+        <a href="#bookings"  class="tab-link pb-2.5 border-b-2 border-transparent whitespace-nowrap">🏨 訂位細節</a>
       </nav>
     </div>
   </header>
@@ -199,6 +200,20 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </section>
+
+    <!-- ══ Section 4：訂位細節（待規劃）══ -->
+    <section id="bookings">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">🏨 訂位細節</h2>
+      <div class="bg-white rounded-2xl p-10 border-2 border-dashed border-gray-200 text-center">
+        <p class="text-3xl mb-3">🚧</p>
+        <p class="font-semibold text-gray-500 mb-2">待規劃</p>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          在 Numbers 新增「訂位細節」工作表後，<br>
+          系統會自動同步並在此顯示各住宿的訂位確認資訊。<br>
+          <span class="text-xs text-gray-300 mt-1 block">點擊行程卡片的「訂位 →」即可跳轉至此。</span>
+        </p>
       </div>
     </section>
 
@@ -374,19 +389,34 @@
                        : p.isNorth  ? '#7C3AED'
                        :              '#0D9488';
 
-      // sub_activities：有 AI 副標時顯示「地點 — 副標」+ 小字括號說明
+      // 住宿偵測關鍵字
+      const ACCOM = /住宿|入住|民宿|飯店|旅館|Hotel|Hostel|Lodge|Motel|Holiday\s*Park|Inn|Resort|Airbnb/i;
+
+      // sub_activities：住宿優先加粗＋連結，其次 AI 副標，其餘一般顯示
       const subtitles = p.ai?.spot_subtitles || {};
       const subList = (p.sub_activities || []).map(s => {
         const parenMatch = s.activity.match(/^(.*?)\s*[（(]([^）)]+)[）)](.*)$/);
         const cleanName  = parenMatch ? (parenMatch[1] + (parenMatch[3] || '')).trim() : s.activity.trim();
         const parenNote  = parenMatch ? parenMatch[2] : '';
+        const isAccomSub = ACCOM.test(s.activity);
 
         let subtitle = null;
         for (const [k, v] of Object.entries(subtitles)) {
           if (cleanName.includes(k) || k.includes(cleanName.split(/[\s.]/)[0])) { subtitle = v; break; }
         }
 
-        if (subtitle) {
+        if (isAccomSub) {
+          const extra = [parenNote, s.note].filter(Boolean).join(' · ');
+          const subTitleHtml = subtitle ? `<span class="text-gray-300"> — </span><span class="text-gray-500 text-xs font-normal">${subtitle}</span>` : '';
+          return `<li class="flex gap-1.5 items-start">
+            <span class="shrink-0 mt-0.5">🏨</span>
+            <span>
+              <span class="font-semibold text-gray-700">${cleanName}</span>${subTitleHtml}
+              <a href="#bookings" onclick="event.stopPropagation()" class="ml-1.5 text-xs text-blue-400 hover:text-blue-600">訂位 →</a>
+              ${extra ? `<span class="block text-xs text-gray-300 mt-0.5">${extra}</span>` : ''}
+            </span>
+          </li>`;
+        } else if (subtitle) {
           const extra = [parenNote, s.note].filter(Boolean).join(' · ');
           return `<li class="flex gap-1.5 items-start">
             <span class="text-gray-300 shrink-0 mt-0.5">·</span>
@@ -413,6 +443,14 @@
           <p class="text-xs text-gray-400 leading-relaxed">${aiText}</p>
         </div>` : '';
 
+      // 主活動：住宿加粗並附連結
+      const isAccomMain = p.activity && ACCOM.test(p.activity);
+      const actHtml = p.activity
+        ? isAccomMain
+          ? `<p class="text-sm font-semibold text-gray-700 flex items-center gap-1.5 flex-wrap">🏨 ${p.activity} <a href="#bookings" onclick="event.stopPropagation()" class="text-xs font-normal text-blue-400 hover:text-blue-600">訂位 →</a></p>`
+          : `<p class="text-sm text-gray-500">${p.activity}</p>`
+        : '';
+
       const numBadge = p.stopNum
         ? `<span class="w-6 h-6 rounded-full text-white text-xs flex items-center justify-center font-bold shrink-0 leading-none"
                 style="background:${dotColor}">${p.stopNum}</span>`
@@ -428,7 +466,7 @@
                 ${p.date ? `<span class="text-xs font-semibold ${badgeColor} px-2 py-0.5 rounded-full">${p.date}</span>` : ''}
                 <span class="font-semibold text-gray-800 leading-tight">${p.location}</span>
               </div>
-              ${p.activity ? `<p class="text-sm text-gray-500">${p.activity}</p>` : ''}
+              ${actHtml}
               ${subList ? `<ul class="mt-1.5 space-y-1 text-sm text-gray-500">${subList}</ul>` : ''}
               ${noteHtml}
               ${aiHtml}
