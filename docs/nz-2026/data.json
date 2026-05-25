@@ -1,8 +1,8 @@
 {
-  "trip_name": "2026.08 紐西蘭-1",
+  "trip_name": "2026 紐西蘭",
   "trip_id": "nz-2026",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/05/24 上午03:06",
+  "last_updated": "2026/05/25 下午11:45",
   "locations": [
     "基督城",
     "Lake Tekpo",
@@ -154,6 +154,96 @@
       "pct": 66.3
     }
   },
+  "cost_split": [
+    {
+      "item": "哲宇機票",
+      "zeyu_owed": 57848,
+      "zeyu_paid": 57848,
+      "shengmin_owed": 0,
+      "shengmin_paid": 0,
+      "note": "2025.12.19 哲宇已匯"
+    },
+    {
+      "item": "基督城住宿",
+      "zeyu_owed": 51850,
+      "zeyu_paid": 51850,
+      "shengmin_owed": 51850,
+      "shengmin_paid": 51850,
+      "note": "($$: 155560 /三家)"
+    },
+    {
+      "item": "8/15-17住宿 \nLake Edge Holiday Park",
+      "zeyu_owed": 11942,
+      "zeyu_paid": 11942,
+      "shengmin_owed": 11942,
+      "shengmin_paid": 11942,
+      "note": "($$: 君 15137)\n($$: 聖閔+哲宇: 23884)"
+    },
+    {
+      "item": "8/17-19住宿 \nHaka House Hostel Aoraki Mt Cook",
+      "zeyu_owed": 17432,
+      "zeyu_paid": 17432,
+      "shengmin_owed": 11925,
+      "shengmin_paid": 11925,
+      "note": "($$: 君/聖閔: 6*3970 = 23820)\n($$: 哲宇: 4*4358 = 17432)"
+    },
+    {
+      "item": "8/19-23住宿 Whakata on Whitbourn",
+      "zeyu_owed": 38541,
+      "zeyu_paid": 38541,
+      "shengmin_owed": 38541,
+      "shengmin_paid": 38541,
+      "note": "($$: 115623/三家)"
+    },
+    {
+      "item": "8/23 紐西蘭國內航空機票",
+      "zeyu_owed": 23223,
+      "zeyu_paid": 0,
+      "shengmin_owed": 17835,
+      "shengmin_paid": 0,
+      "note": "2026.05.09 君已先結"
+    },
+    {
+      "item": "紐西蘭租車（07/17-08/23）",
+      "zeyu_owed": 56849,
+      "zeyu_paid": 0,
+      "shengmin_owed": 36707,
+      "shengmin_paid": 0,
+      "note": "2026.05.09 SNAP 聖閔+君（君已匯73414） 哲宇 （君已匯56849）"
+    },
+    {
+      "item": "紐西蘭租車（08/14-08/23)",
+      "zeyu_owed": 0,
+      "zeyu_paid": 0,
+      "shengmin_owed": 10747,
+      "shengmin_paid": 0,
+      "note": "2026.05.09 Eurocar 聖閔+君  21495（君已匯21495）"
+    },
+    {
+      "item": "紐西蘭租車（08/23-08/27)",
+      "zeyu_owed": 0,
+      "zeyu_paid": 0,
+      "shengmin_owed": 0,
+      "shengmin_paid": 0,
+      "note": "各家自行處理，哲宇11191+聖閔10069已匯回"
+    },
+    {
+      "item": "8/23-25住宿Rydges Rotorua",
+      "zeyu_owed": 7198,
+      "zeyu_paid": 7198,
+      "shengmin_owed": 7198,
+      "shengmin_paid": 7198,
+      "note": "($$: 21592/三家)"
+    },
+    {
+      "item": "8/25-27住宿Holiday Inn Auckland Airport by IHG",
+      "zeyu_owed": 6895,
+      "zeyu_paid": 6895,
+      "shengmin_owed": 6895,
+      "shengmin_paid": 6895,
+      "note": "($$: 20683/三家)"
+    }
+  ],
   "ai_content": {
     "基督城": {
       "intro": "基督城是新西蘭南島的主要城市，以其美麗的花園和英式建築聞名。這裡最大的亮點是重建後的城市中心和雅芳河沿岸的美麗步道。參觀時可以留意當地的公園及美食餐廳，享受悠閒的氛圍。"
