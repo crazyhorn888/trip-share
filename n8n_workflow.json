@@ -1,0 +1,809 @@
+{
+  "name": "4. [Trip] Numbers to Github Website",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "trip-sync",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "n1-webhook",
+      "name": "收到同步請求",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        304
+      ],
+      "webhookId": "d4a7b3c2-1e5f-4a8b-9c3d-2f6e1a4b7c8d"
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $input.item.json.body;\n\nconst costItems = payload.cost_split || [];\nconst summary = {\n  zeyu:     { name: '哲宇家', owed: 0, paid: 0, remaining: 0, pct: 0 },\n  shengmin: { name: '聖閔家', owed: 0, paid: 0, remaining: 0, pct: 0 }\n};\n\nfor (const item of costItems) {\n  summary.zeyu.owed     += parseFloat(item.zeyu_owed     || 0);\n  summary.zeyu.paid     += parseFloat(item.zeyu_paid     || 0);\n  summary.shengmin.owed += parseFloat(item.shengmin_owed || 0);\n  summary.shengmin.paid += parseFloat(item.shengmin_paid || 0);\n}\n\nfor (const f of Object.values(summary)) {\n  f.remaining = Math.round(f.owed - f.paid);\n  f.pct = f.owed > 0 ? Math.round(f.paid / f.owed * 1000) / 10 : 0;\n}\n\nconst locationHash = [...(payload.locations || [])].sort().join('|');\n\nconst now = new Date().toLocaleString('zh-TW', {\n  timeZone: 'Asia/Taipei',\n  year: 'numeric', month: '2-digit', day: '2-digit',\n  hour: '2-digit', minute: '2-digit'\n});\n\nreturn [{ json: { ...payload, cost_summary: summary, location_hash: locationHash, last_updated: now } }];"
+      },
+      "id": "n2-derive",
+      "name": "計算衍生資料",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $json.trip_id }}/cache.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "n3-get-cache",
+      "name": "讀取 cache.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        688,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tripData = $('計算衍生資料').item.json;\nconst cacheResp = $input.item.json;\n\nlet cached = { location_hash: '', ai_content: {} };\nlet cacheSha = null;\n\nif (cacheResp.sha && cacheResp.content) {\n  cacheSha = cacheResp.sha;\n  try {\n    cached = JSON.parse(Buffer.from(cacheResp.content, 'base64').toString('utf-8'));\n  } catch(e) {}\n}\n\nconst newLocations = (tripData.locations || [])\n  .filter(loc => !(loc in (cached.ai_content || {})));\n\nreturn [{ json: {\n  ...tripData,\n  cached_ai:     cached.ai_content || {},\n  cache_sha:     cacheSha,\n  new_locations: newLocations,\n  needs_ai:      newLocations.length > 0\n} }];"
+      },
+      "id": "n4-check-hash",
+      "name": "比對 hash",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.needs_ai }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "n5-if-ai",
+      "name": "需要 AI 更新？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.item.json;\n\n// 建立 location → sub_activities 對照表\nconst locSubs = {};\nfor (const item of (d.itinerary || [])) {\n  const subs = (item.sub_activities || []).filter(s => s.activity);\n  if (!subs.length) continue;\n  const parts = item.location.replace(/→/g, '-').split('-').map(p => p.trim()).filter(Boolean);\n  const key = parts[parts.length - 1] || item.location;\n  if (!locSubs[key]) locSubs[key] = [];\n  subs.forEach(s => { if (!locSubs[key].includes(s.activity)) locSubs[key].push(s.activity); });\n}\n\nconst locationBlocks = d.new_locations.map(loc => {\n  const subs = locSubs[loc] || [];\n  const subLine = subs.length ? `\\n  具體行程地點：${subs.join('、')}` : '';\n  return `景點：${loc}${subLine}`;\n}).join('\\n\\n');\n\nconst prompt = `請用繁體中文為以下景點各寫介紹，每個景點嚴格使用以下格式：\n第1句：一句話介紹這個地區（結尾加句號）\n第2句：一句話介紹當地最具代表性的特色（結尾加句號）\n第3句：「此區相關景點：XXX、XXX、XXX。」（列出3個以上值得去的景點名稱）\n\n若該景點有提供具體行程地點清單，請在 spot_subtitles 欄位為每個地點各寫一句話副標（20字內）。\n\n${locationBlocks}\n\n請以 JSON 格式回覆，格式範例：\n{ \"景點名\": { \"intro\": \"第1句。第2句。此區相關景點：XXX、XXX、XXX。\", \"spot_subtitles\": { \"具體地點A\": \"一句話副標\", \"具體地點B\": \"一句話副標\" } } }\n只回傳 JSON，不要其他說明文字。`;\n\nreturn [{ json: { ...d, openai_body: { model: 'gpt-4o-mini', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] } } }];"
+      },
+      "id": "n6a-prep-openai",
+      "name": "組合 OpenAI 請求",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.openai_body) }}",
+        "options": {}
+      },
+      "id": "n6-claude",
+      "name": "呼叫 OpenAI API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        160
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rfj4i0z02gn3qDDD",
+          "name": "OpenAI API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tripData = $('比對 hash').item.json;\nconst openaiResp = $input.item.json;\n\nlet newAI = {};\ntry {\n  const rawText = openaiResp.choices[0].message.content.trim();\n  const match = rawText.match(/\\{[\\s\\S]*\\}/);\n  if (match) newAI = JSON.parse(match[0]);\n} catch(e) {\n  console.log('AI parse error:', e.message);\n}\n\nreturn [{ json: {\n  ...tripData,\n  ai_content:   { ...tripData.cached_ai, ...newAI },\n  ai_updated:   true,\n  ai_new_count: Object.keys(newAI).length\n} }];"
+      },
+      "id": "n7-merge-ai",
+      "name": "合併 AI 內容（OpenAI）",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const tripData = $input.item.json;\nreturn [{ json: { ...tripData, ai_content: tripData.cached_ai, ai_updated: false, ai_new_count: 0 } }];"
+      },
+      "id": "n8-use-cache",
+      "name": "使用快取 AI",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.item.json;\n\nconst dataJson = {\n  trip_name:    d.trip_name,\n  trip_id:      d.trip_id,\n  date_range:   d.date_range,\n  last_updated: d.last_updated,\n  locations:    d.locations,\n  itinerary:    d.itinerary || [],\n  cost_summary: d.cost_summary,\n  cost_split:   d.cost_split || [],\n  ai_content:   d.ai_content\n};\n\nconst cacheJson = {\n  location_hash: d.location_hash,\n  locations:     d.locations,\n  ai_content:    d.ai_content,\n  updated_at:    d.last_updated\n};\n\nreturn [{ json: {\n  ...d,\n  data_json_b64:  Buffer.from(JSON.stringify(dataJson, null, 2)).toString('base64'),\n  cache_json_b64: Buffer.from(JSON.stringify(cacheJson, null, 2)).toString('base64')\n} }];"
+      },
+      "id": "n10-build-json",
+      "name": "組合 JSON 檔案",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $json.trip_id }}/data.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "n11-get-data-sha",
+      "name": "取得 data.json SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2224,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('組合 JSON 檔案').item.json;\nconst shaResp = $input.item.json;\n\nconst putBody = {\n  message: `sync(${d.trip_id}): ${d.last_updated}${d.ai_updated ? ' [AI updated ' + d.ai_new_count + ' spots]' : ''}`,\n  content: d.data_json_b64,\n  ...(shaResp.sha ? { sha: shaResp.sha } : {})\n};\n\nreturn [{ json: { ...d, data_put_body: putBody } }];"
+      },
+      "id": "n12-prep-data-put",
+      "name": "準備 data.json PUT",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2448,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $('組合 JSON 檔案').item.json.trip_id }}/data.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.data_put_body }}",
+        "options": {}
+      },
+      "id": "n13-put-data",
+      "name": "推送 data.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2672,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $('組合 JSON 檔案').item.json.trip_id }}/cache.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "n14-get-cache-sha",
+      "name": "取得 cache.json SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2880,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('組合 JSON 檔案').item.json;\nconst shaResp = $input.item.json;\n\nconst putBody = {\n  message: `cache(${d.trip_id}): update location hash`,\n  content: d.cache_json_b64,\n  ...(shaResp.sha ? { sha: shaResp.sha } : {})\n};\n\nreturn [{ json: { ...d, cache_put_body: putBody } }];"
+      },
+      "id": "n15-prep-cache-put",
+      "name": "準備 cache.json PUT",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3104,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $('組合 JSON 檔案').item.json.trip_id }}/cache.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.cache_put_body }}",
+        "options": {}
+      },
+      "id": "n16-put-cache",
+      "name": "推送 cache.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3328,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $('組合 JSON 檔案').item.json.trip_id }}/index.html",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "n18-check-index-html",
+      "name": "檢查 index.html 是否存在",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3552,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.message || '' }}",
+              "rightValue": "Not Found",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "n19-if-new-trip",
+      "name": "新旅程？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        3760,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/nz-2026/index.html",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "n20-get-template",
+      "name": "取得模板 index.html",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3984,
+        160
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const templateResp = $input.item.json;\nconst tripData = $('組合 JSON 檔案').item.json;\nreturn [{ json: {\n  ...tripData,\n  index_put_body: {\n    message: `init(${tripData.trip_id}): 建立旅程網頁`,\n    content: templateResp.content\n  }\n} }];"
+      },
+      "id": "n20b-prep-index-put",
+      "name": "準備 index.html PUT",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4208,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/{{ $json.trip_id }}/index.html",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.index_put_body }}",
+        "options": {}
+      },
+      "id": "n21-put-new-index",
+      "name": "建立新旅程 index.html",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4432,
+        160
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/trips.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "n23-get-trips-sha",
+      "name": "取得 trips.json SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4640,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tripData = $('組合 JSON 檔案').item.json;\nconst tripsResp = $input.item.json;\n\nlet trips = [];\nlet tripsSha = null;\n\nif (tripsResp.sha && tripsResp.content) {\n  tripsSha = tripsResp.sha;\n  try {\n    const parsed = JSON.parse(Buffer.from(tripsResp.content, 'base64').toString('utf-8'));\n    trips = parsed.trips || [];\n  } catch(e) {}\n}\n\nconst entry = {\n  trip_id:      tripData.trip_id,\n  trip_name:    tripData.trip_name,\n  emoji:        tripData.trip_emoji || '✈️',\n  status:       tripData.trip_status || '規劃中',\n  date_range:   tripData.date_range,\n  last_updated: tripData.last_updated\n};\n\nconst idx = trips.findIndex(t => t.trip_id === tripData.trip_id);\nif (idx >= 0) {\n  trips[idx] = entry;\n} else {\n  trips.push(entry);\n}\n\nconst b64 = Buffer.from(JSON.stringify({ trips }, null, 2)).toString('base64');\nconst putBody = {\n  message: `trips: sync ${tripData.trip_id}`,\n  content: b64,\n  ...(tripsSha ? { sha: tripsSha } : {})\n};\n\nreturn [{ json: { ...tripData, trips_put_body: putBody } }];"
+      },
+      "id": "n24-build-trips",
+      "name": "更新 trips.json 內容",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4864,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://api.github.com/repos/crazyhorn888/trip-share/contents/docs/trips.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.trips_put_body }}",
+        "options": {}
+      },
+      "id": "n25-put-trips",
+      "name": "推送 trips.json",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5088,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QoK9TA32LNBMbtRX",
+          "name": "GitHub Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'ok', trip_id: $('組合 JSON 檔案').item.json.trip_id, updated: $('組合 JSON 檔案').item.json.last_updated, ai_updated: $('組合 JSON 檔案').item.json.ai_updated, ai_new_count: $('組合 JSON 檔案').item.json.ai_new_count }) }}",
+        "options": {}
+      },
+      "id": "n17-respond",
+      "name": "回傳成功",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        5312,
+        304
+      ]
+    }
+  ],
+  "connections": {
+    "收到同步請求": {
+      "main": [
+        [
+          {
+            "node": "計算衍生資料",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "計算衍生資料": {
+      "main": [
+        [
+          {
+            "node": "讀取 cache.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "讀取 cache.json": {
+      "main": [
+        [
+          {
+            "node": "比對 hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "比對 hash": {
+      "main": [
+        [
+          {
+            "node": "需要 AI 更新？",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "需要 AI 更新？": {
+      "main": [
+        [
+          {
+            "node": "組合 OpenAI 請求",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "使用快取 AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "組合 OpenAI 請求": {
+      "main": [
+        [
+          {
+            "node": "呼叫 OpenAI API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "呼叫 OpenAI API": {
+      "main": [
+        [
+          {
+            "node": "合併 AI 內容（OpenAI）",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "合併 AI 內容（OpenAI）": {
+      "main": [
+        [
+          {
+            "node": "組合 JSON 檔案",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "使用快取 AI": {
+      "main": [
+        [
+          {
+            "node": "組合 JSON 檔案",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "組合 JSON 檔案": {
+      "main": [
+        [
+          {
+            "node": "取得 data.json SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "取得 data.json SHA": {
+      "main": [
+        [
+          {
+            "node": "準備 data.json PUT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "準備 data.json PUT": {
+      "main": [
+        [
+          {
+            "node": "推送 data.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "推送 data.json": {
+      "main": [
+        [
+          {
+            "node": "取得 cache.json SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "取得 cache.json SHA": {
+      "main": [
+        [
+          {
+            "node": "準備 cache.json PUT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "準備 cache.json PUT": {
+      "main": [
+        [
+          {
+            "node": "推送 cache.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "推送 cache.json": {
+      "main": [
+        [
+          {
+            "node": "檢查 index.html 是否存在",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "檢查 index.html 是否存在": {
+      "main": [
+        [
+          {
+            "node": "新旅程？",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "新旅程？": {
+      "main": [
+        [
+          {
+            "node": "取得模板 index.html",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "取得 trips.json SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "取得模板 index.html": {
+      "main": [
+        [
+          {
+            "node": "準備 index.html PUT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "準備 index.html PUT": {
+      "main": [
+        [
+          {
+            "node": "建立新旅程 index.html",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "建立新旅程 index.html": {
+      "main": [
+        [
+          {
+            "node": "取得 trips.json SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "取得 trips.json SHA": {
+      "main": [
+        [
+          {
+            "node": "更新 trips.json 內容",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "更新 trips.json 內容": {
+      "main": [
+        [
+          {
+            "node": "推送 trips.json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "推送 trips.json": {
+      "main": [
+        [
+          {
+            "node": "回傳成功",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null
+}
