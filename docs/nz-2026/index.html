@@ -74,8 +74,7 @@
     <section id="map">
       <h2 class="text-xl font-bold text-gray-800 mb-4">🗺 路線總覽</h2>
       <div class="flex flex-wrap gap-4 mb-4 text-xs text-gray-500">
-        <div class="flex items-center gap-1.5"><span class="inline-block w-6 h-0.5 bg-blue-500 rounded"></span>開車路段</div>
-        <div class="flex items-center gap-1.5"><span class="inline-block w-6 border-t-2 border-dashed border-purple-400"></span>飛機段</div>
+        <div class="flex items-center gap-1.5"><span class="inline-block w-6 h-0.5 bg-blue-500 rounded"></span>行程路線</div>
       </div>
       <div id="overview-map" class="rounded-2xl overflow-hidden shadow-sm border border-gray-100" style="height: 460px;"></div>
       <div id="route-chips" class="flex flex-wrap gap-2 mt-3 text-xs text-gray-500"></div>
@@ -106,13 +105,7 @@
           <!-- 圖例 -->
           <div class="flex flex-wrap gap-3 mt-2.5 text-xs text-gray-400">
             <span class="flex items-center gap-1.5">
-              <span class="inline-block w-5 h-0.5 bg-blue-500 rounded"></span>南島路線
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="inline-block w-5 border-t-2 border-dashed border-purple-400"></span>飛行段
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="inline-block w-5 h-0.5 bg-purple-500 rounded"></span>北島路線
+              <span class="inline-block w-5 h-0.5 bg-blue-500 rounded"></span>行程路線
             </span>
           </div>
         </div>
@@ -318,25 +311,17 @@
     iPhases = itinerary.map((item, i) => {
       const coords = destCoords(item.location);
       const ai     = findAi(item.location, aiContent);
-      const isNorth = coords && coords[0] > -41;
       if (coords) stopNum++;
-      return { ...item, idx: i, stopNum: coords ? stopNum : null, coords, ai, isNorth };
+      return { ...item, idx: i, stopNum: coords ? stopNum : null, coords, ai };
     });
 
-    const south = iPhases.filter(p => p.coords && !p.isNorth).map(p => p.coords);
-    const north = iPhases.filter(p => p.coords && p.isNorth).map(p => p.coords);
-    const lastSouth = south[south.length - 1];
-    const firstNorth = north[0];
-
-    if (south.length > 1) L.polyline(south, { color:'#2563EB', weight:3, opacity:0.7 }).addTo(iMap);
-    if (north.length > 1) L.polyline(north, { color:'#7C3AED', weight:3, opacity:0.7 }).addTo(iMap);
-    if (lastSouth && firstNorth)
-      L.polyline([lastSouth, firstNorth], { color:'#7C3AED', weight:2.5, opacity:0.6, dashArray:'10 8' }).addTo(iMap);
+    const allCoords = iPhases.filter(p => p.coords).map(p => p.coords);
+    if (allCoords.length > 1)
+      L.polyline(allCoords, { color:'#2563EB', weight:3, opacity:0.7 }).addTo(iMap);
 
     iPhases.forEach(p => {
       if (!p.coords) return;
-      const color = p.isNorth ? '#7C3AED' : '#2563EB';
-      const marker = L.marker(p.coords, { icon: makeMarkerIcon(p.stopNum, color, false) })
+      const marker = L.marker(p.coords, { icon: makeMarkerIcon(p.stopNum, '#2563EB', false) })
         .bindPopup(`<div style="min-width:120px"><b>${p.location}</b><br>
           <span style="color:#6b7280;font-size:12px">${p.date || ''}</span></div>`)
         .addTo(iMap)
@@ -350,12 +335,8 @@
 
     container.innerHTML = iPhases.map(p => {
       const isFlight   = !!(p.activity || '').match(/\d{1,2}:\d{2}/);
-      const badgeColor = isFlight    ? 'text-blue-500 bg-blue-50'
-                       : p.isNorth  ? 'text-purple-500 bg-purple-50'
-                       :              'text-teal-600 bg-teal-50';
-      const dotColor   = isFlight    ? '#3B82F6'
-                       : p.isNorth  ? '#7C3AED'
-                       :              '#0D9488';
+      const badgeColor = isFlight ? 'text-blue-500 bg-blue-50' : 'text-teal-600 bg-teal-50';
+      const dotColor   = isFlight ? '#3B82F6' : '#0D9488';
 
       // 住宿偵測關鍵字
       const ACCOM = /住宿|入住|民宿|飯店|旅館|Hotel|Hostel|Lodge|Motel|Holiday\s*Park|Inn|Resort|Airbnb/i;
@@ -403,12 +384,22 @@
       const noteHtml = p.note ? `<p class="text-xs text-gray-400 mt-2 leading-relaxed">${p.note.replace(/\n/g, ' · ')}</p>` : '';
 
       const skipAi = ['台北', '桃園', '台灣'].some(s => p.location.includes(s));
-      const aiText = (!skipAi && p.ai)
-        ? (p.ai.intro || '').match(/[^。！？!?]+[。！？!?]*/g)?.slice(0, 3).join('').trim()
-        : null;
-      const aiHtml = aiText ? `
+      const aiParts = (!skipAi && p.ai) ? (() => {
+        const ai = p.ai;
+        const parts = [];
+        if (ai.intro)        parts.push(`<p class="text-xs text-gray-400 leading-relaxed">${ai.intro}</p>`);
+        if (ai.address)      parts.push(`<p class="text-xs text-gray-400 mt-1">📍 ${ai.address}</p>`);
+        if (ai.area_context) parts.push(`<p class="text-xs text-gray-400 mt-1 italic">${ai.area_context}</p>`);
+        if (ai.accommodation) parts.push(`<p class="text-xs text-gray-400 mt-1">🏨 ${ai.accommodation}</p>`);
+        if (ai.trending && ai.trending.length > 0)
+          parts.push(`<div class="flex flex-wrap gap-1 mt-1.5">${ai.trending.map(t =>
+            `<span class="text-xs bg-teal-50 text-teal-600 px-1.5 py-0.5 rounded-full">${t}</span>`
+          ).join('')}</div>`);
+        return parts;
+      })() : null;
+      const aiHtml = aiParts && aiParts.length > 0 ? `
         <div class="ai-always mt-2 pt-2 border-t border-gray-50">
-          <p class="text-xs text-gray-400 leading-relaxed">${aiText}</p>
+          ${aiParts.join('')}
         </div>` : '';
 
       // 主活動：住宿加粗並附連結
