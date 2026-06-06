@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2026 紐西蘭 · 行程</title>
+  <title>行程 · 載入中</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -47,7 +47,7 @@
       <div class="flex items-center gap-3 py-3">
         <a href="../" class="text-blue-500 hover:text-blue-700 text-sm font-medium shrink-0">← 所有行程</a>
         <span class="text-gray-200">|</span>
-        <span class="font-semibold text-gray-700 truncate">🇳🇿 2026 紐西蘭</span>
+        <span id="header-trip-name" class="font-semibold text-gray-700 truncate">載入中…</span>
         <span class="last-updated ml-auto text-xs text-gray-400 shrink-0">更新：載入中…</span>
       </div>
       <nav class="flex gap-5 text-sm font-medium text-gray-400 overflow-x-auto pb-0 -mb-px">
@@ -64,10 +64,10 @@
     <!-- ── Hero ── -->
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
       <div>
-        <h1 class="text-4xl font-bold text-gray-900">🇳🇿 2026 紐西蘭</h1>
-        <p class="text-gray-400 mt-1.5">2026/07/16 – 2026/08/27 &nbsp;·&nbsp; 42 天 &nbsp;·&nbsp; 3 個家庭同行</p>
+        <h1 id="hero-title" class="text-4xl font-bold text-gray-900"></h1>
+        <p id="hero-subtitle" class="text-gray-400 mt-1.5"></p>
       </div>
-      <span class="self-start sm:self-auto bg-blue-50 text-blue-600 text-sm px-3 py-1 rounded-full font-medium">規劃中</span>
+      <span id="hero-status" class="self-start sm:self-auto bg-blue-50 text-blue-600 text-sm px-3 py-1 rounded-full font-medium"></span>
     </div>
 
     <!-- ══ Section 1：路線總覽 ══ -->
@@ -78,23 +78,7 @@
         <div class="flex items-center gap-1.5"><span class="inline-block w-6 border-t-2 border-dashed border-purple-400"></span>飛機段</div>
       </div>
       <div id="overview-map" class="rounded-2xl overflow-hidden shadow-sm border border-gray-100" style="height: 460px;"></div>
-      <div class="flex flex-wrap gap-2 mt-3 text-xs text-gray-500">
-        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">① 基督城</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">② Lake Tekapo</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">③ Mt. Cook</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">④ 皇后鎮</span>
-        <span class="text-gray-300">✈→</span>
-        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑤ 奧克蘭</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑥ 哈比村</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑦ 羅托魯瓦</span>
-        <span class="text-gray-300">→</span>
-        <span class="bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">⑧ 奧克蘭（回程）</span>
-      </div>
+      <div id="route-chips" class="flex flex-wrap gap-2 mt-3 text-xs text-gray-500"></div>
     </section>
 
     <!-- ══ Section 2：行程（左地圖 + 右卡片）══ -->
@@ -549,6 +533,24 @@
 
   // ── data.json 動態載入 ──────────────────────────────────────────────
   fetch('./data.json').then(r => r.json()).then(d => {
+    // ── 動態填入標題、header、hero、route chips ──
+    const emoji = d.trip_emoji || '✈️';
+    const name  = d.trip_name  || '行程';
+    const el    = id => document.getElementById(id);
+    document.title = `${name} · 行程`;
+    if (el('header-trip-name')) el('header-trip-name').textContent = `${emoji} ${name}`;
+    if (el('hero-title'))       el('hero-title').textContent       = `${emoji} ${name}`;
+    if (el('hero-subtitle'))    el('hero-subtitle').textContent    = d.date_range || '';
+    if (el('hero-status'))      el('hero-status').textContent      = d.trip_status || '規劃中';
+    const chips = el('route-chips');
+    if (chips && d.locations && d.locations.length > 0) {
+      chips.innerHTML = d.locations.map((loc, i) => {
+        const num   = i < 20 ? String.fromCharCode(9312 + i) : `${i + 1}.`;
+        const arrow = i > 0 ? '<span class="text-gray-300">→</span>' : '';
+        return `${arrow}<span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">${num} ${loc}</span>`;
+      }).join('');
+    }
+
     document.querySelectorAll('.last-updated').forEach(el => el.textContent = d.last_updated);
 
     // 費用卡片
