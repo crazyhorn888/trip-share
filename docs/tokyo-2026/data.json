@@ -1,0 +1,127 @@
+{
+  "trip_name": "2026.12 日本",
+  "trip_id": "tokyo-2026",
+  "date_range": "2026/12/21 – 2026/12/28",
+  "last_updated": "2026/06/06 下午03:42",
+  "locations": [
+    "東京",
+    "迪士尼",
+    "三麗鷗彩虹樂園+六本木",
+    "FREE!!!!!",
+    "Snoopy博物館+銀座"
+  ],
+  "itinerary": [
+    {
+      "date": "2026/12/21",
+      "location": "台北-東京",
+      "activity": "松山-羽田 18:25-22:15 (君)",
+      "note": "住: 1955 Tokyo Bay",
+      "sub_activities": [],
+      "is_main": true
+    },
+    {
+      "date": "2026/12/22  2026/12/23",
+      "location": "迪士尼",
+      "activity": "東京迪士尼 (陸地+海洋)",
+      "note": "住: 1955 Tokyo Bay",
+      "sub_activities": [],
+      "is_main": true
+    },
+    {
+      "date": "2026/12/24",
+      "location": "三麗鷗彩虹樂園+六本木",
+      "activity": "",
+      "note": "住: Sun Inn",
+      "sub_activities": [],
+      "is_main": true
+    },
+    {
+      "date": "2026/12/25",
+      "location": "FREE!!!!!",
+      "activity": "",
+      "note": "住: Sun Inn",
+      "sub_activities": [],
+      "is_main": true
+    },
+    {
+      "date": "2026/12/26",
+      "location": "Snoopy博物館+銀座",
+      "activity": "",
+      "note": "住: Sun Inn",
+      "sub_activities": [],
+      "is_main": true
+    },
+    {
+      "date": "2026/12/27",
+      "location": "",
+      "activity": "",
+      "note": "住: Sun Inn",
+      "sub_activities": [],
+      "is_main": true
+    },
+    {
+      "date": "2026/12/28",
+      "location": "",
+      "activity": "",
+      "note": "",
+      "sub_activities": [],
+      "is_main": true
+    }
+  ],
+  "cost_summary": {
+    "zeyu": {
+      "name": "哲宇家",
+      "owed": 1000,
+      "paid": 1000,
+      "remaining": 0,
+      "pct": 100
+    },
+    "shengmin": {
+      "name": "聖閔家",
+      "owed": 200,
+      "paid": 200,
+      "remaining": 0,
+      "pct": 100
+    }
+  },
+  "cost_split": [
+    {
+      "item": "Sample",
+      "zeyu_owed": 1000,
+      "zeyu_paid": 1000,
+      "shengmin_owed": 200,
+      "shengmin_paid": 200,
+      "note": "Sample"
+    }
+  ],
+  "ai_content": {
+    "東京": {
+      "intro": "東京是日本的首都，融合了傳統與現代的獨特魅力。這裡以繁華的都市生活與歷史悠久的景點聞名於世。此區相關景點：淺草寺、東京塔、秋葉原。",
+      "spot_subtitles": {}
+    },
+    "迪士尼": {
+      "intro": "東京迪士尼是全球最受歡迎的主題樂園之一，充滿夢幻色彩。這裡不僅有刺激的遊樂設施，還有各種精緻的表演與遊行。此區相關景點：東京迪士尼樂園、東京迪士尼海洋、迪士尼商店。",
+      "spot_subtitles": {}
+    },
+    "三麗鷗彩虹樂園+六本木": {
+      "intro": "三麗鷗彩虹樂園是三麗鷗角色的主題樂園，深受小朋友喜愛。六本木則是東京的時尚與文化中心，融合了藝術、購物與娛樂。此區相關景點：三麗鷗彩虹樂園、六本木新城、森美術館。",
+      "spot_subtitles": {
+        "三麗鷗彩虹樂園": "小朋友必遊的夢幻世界。",
+        "六本木新城": "體驗最新潮的藝術與設計。",
+        "森美術館": "欣賞現代藝術與城市全景。"
+      }
+    },
+    "FREE!!!!!": {
+      "intro": "FREE!!!!!是一個充滿創意與趣味的活動場所，適合各年齡層的遊客。這裡提供各種免費的體驗與活動，讓人盡情享受樂趣。此區相關景點：步行街、市集、戶外展覽。",
+      "spot_subtitles": {}
+    },
+    "Snoopy博物館+銀座": {
+      "intro": "Snoopy博物館展示了可愛的史努比角色及其故事，讓粉絲們樂在其中。銀座則是東京的高端購物區，擁有眾多奢侈品牌及美食餐廳。此區相關景點：Snoopy博物館、銀座購物街、歌舞伎座。",
+      "spot_subtitles": {
+        "Snoopy博物館": "探索史努比的可愛世界。",
+        "銀座購物街": "享受高端品牌與美食的饗宴。",
+        "歌舞伎座": "體驗傳統日本表演藝術。"
+      }
+    }
+  }
+}

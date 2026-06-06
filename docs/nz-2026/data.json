@@ -2,7 +2,7 @@
   "trip_name": "2026 紐西蘭",
   "trip_id": "nz-2026",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/05/26 上午12:09",
+  "last_updated": "2026/06/06 下午03:42",
   "locations": [
     "基督城",
     "Lake Tekpo",
@@ -142,9 +142,9 @@
     "zeyu": {
       "name": "哲宇家",
       "owed": 271778,
-      "paid": 191706,
-      "remaining": 80072,
-      "pct": 70.5
+      "paid": 271778,
+      "remaining": 0,
+      "pct": 100
     },
     "shengmin": {
       "name": "聖閔家",
@@ -198,18 +198,18 @@
     {
       "item": "8/23 紐西蘭國內航空機票",
       "zeyu_owed": 23223,
-      "zeyu_paid": 0,
+      "zeyu_paid": 23223,
       "shengmin_owed": 17835,
       "shengmin_paid": 0,
-      "note": "2026.05.09 君已先結"
+      "note": "2026.05.09 君已先結 (6/6哲宇已結)"
     },
     {
       "item": "紐西蘭租車（07/17-08/23）",
       "zeyu_owed": 56849,
-      "zeyu_paid": 0,
+      "zeyu_paid": 56849,
       "shengmin_owed": 36707,
       "shengmin_paid": 0,
-      "note": "2026.05.09 SNAP 聖閔+君（君已匯73414） 哲宇 （君已匯56849）"
+      "note": "2026.05.09 SNAP 聖閔+君（君已匯73414） 哲宇 （君已匯56849）(6/6哲宇已結)"
     },
     {
       "item": "紐西蘭租車（08/14-08/23)",
