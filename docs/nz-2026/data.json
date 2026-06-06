@@ -4,38 +4,17 @@
   "trip_emoji": "🇳🇿",
   "trip_status": "規劃中",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/06/06 下午06:22",
+  "last_updated": "2026/06/06 下午07:24",
   "locations": [
     "基督城",
-    "Lake Tekpo",
+    "Lake Tekapo",
     "Mt. Cook",
     "皇后鎮",
     "奧克蘭",
     "北島",
     "羅托魯瓦"
   ],
-  "geo_coords": {
-    "基督城": [
-      -43.530955,
-      172.6364343
-    ],
-    "Mt. Cook": [
-      -43.7349453,
-      170.0977232
-    ],
-    "皇后鎮": [
-      -45.0321923,
-      168.661
-    ],
-    "奧克蘭": [
-      -36.852095,
-      174.7631803
-    ],
-    "北島": [
-      -38.0035304,
-      175.957821
-    ]
-  },
+  "geo_coords": {},
   "itinerary": [
     {
       "date": "2026/07/16",
@@ -55,7 +34,7 @@
     },
     {
       "date": "2026/8/15-8/17",
-      "location": "基督城- Lake Tekpo",
+      "location": "基督城- Lake Tekapo",
       "activity": "牧羊人教堂",
       "note": "住: Lake Edge Holiday Park",
       "sub_activities": [
@@ -139,7 +118,7 @@
           "note": ""
         },
         {
-          "activity": "羅托魯瓦",
+          "activity": "羅托魯瓦（Rotorua）",
           "note": ""
         }
       ],
@@ -270,49 +249,97 @@
   ],
   "ai_content": {
     "基督城": {
-      "intro": "基督城是新西蘭南島最大城市，也是南島的文化與商業中心。這裡保存著英式風格的建築與現代化的城市景觀。此區相關景點：基督城植物園、坎特伯雷博物館、基督城藝術中心。",
-      "spot_subtitles": {}
-    },
-    "Lake Tekpo": {
-      "intro": "Lake Tekapo 是一個以明亮的藍色湖水而聞名的旅遊勝地。這裡的夜空更是被認定為全球最佳的觀星地點之一。此區相關景點：Mt. John Observatory、Tekapo Springs、Church of the Good Shepherd。",
-      "spot_subtitles": {
-        "Mt. John Observatory": "最佳的夜空觀星地點，有導覽團可報名。",
-        "Tekapo Springs": "四季皆宜的溫泉與水上娛樂設施。"
-      }
-    },
-    "Mt. Cook": {
-      "intro": "Mt. Cook 是新西蘭最高的山峰，擁有壯麗的自然景觀。這裡是登山健行者的天堂，擁有多條絕佳步道可供探索。此區相關景點：Tasman Glacier Walk、Hooker Valley Track、Mt. Cook Visitor Centre。",
-      "spot_subtitles": {
-        "Tasman Glacier Walk": "走在冰河上，體驗壯觀的冰川景觀。",
-        "Hooker Valley Track": "如詩如畫的健行步道，適合各種程度的遊客。"
-      }
-    },
-    "皇后鎮": {
-      "intro": "皇后鎮被譽為冒險之都，是每位探險者必訪的熱點。這裡提供各種刺激的活動，從滑雪到極限運動應有盡有。此區相關景點：滑車、滑雪、米爾福峽灣一日遊。",
-      "spot_subtitles": {
-        "滑車": "挑戰自我，體驗高空滑索的刺激。",
-        "滑雪": "冬季滑雪勝地，適合各種技術的滑雪者。"
-      }
-    },
-    "奧克蘭": {
-      "intro": "奧克蘭是新西蘭最大的城市，也是主要的商業與文化樞紐。這裡擁有迷人的自然景觀與豐富的多元文化。此區相關景點：奧克蘭博物館、天空塔、維多利亞街。",
-      "spot_subtitles": {}
-    },
-    "北島": {
-      "intro": "北島是新西蘭的主要島嶼之一，以其壯麗的自然環境和熱情的地熱活動著稱。這裡擁有多樣的自然奇觀，是探索新西蘭文化的最佳地點。此區相關景點：陶波、羅托魯瓦、懷哈科島。",
-      "spot_subtitles": {}
-    },
-    "羅托魯瓦": {
-      "intro": "羅托魯瓦是以地熱溫泉聞名的城市，吸引著眾多旅客前來放鬆身心。這裡的毛利文化與活動也讓人印象深刻，充滿獨特魅力。此區相關景點：地熱公園、毛利文化村、羅托魯瓦湖。",
+      "intro": "新西蘭南島重要城市之一。",
+      "address": "",
+      "area_context": "擁有悠久歷史與美麗公園的城市。",
+      "accommodation": "",
+      "trending": [
+        "坎特伯雷博物館",
+        "基督城植物園",
+        "重建後的市中心"
+      ],
       "spot_subtitles": {}
     },
     "Lake Tekapo": {
-      "intro": "特卡波湖是一個以壯麗湖光山色聞名的小鎮。這裡的夜空是新西蘭最明亮的星空之一，深受天文愛好者的喜愛。此區相關景點：特卡波教堂、牧羊人雕像、星空保護區。",
+      "intro": "美麗的湖泊，以夜空聞名。",
+      "address": "",
+      "area_context": "湖水呈現迷人藍色的山谷。",
+      "accommodation": "",
+      "trending": [
+        "Mt.John Observatory",
+        "Tekapo Springs",
+        "星空攝影體驗"
+      ],
       "spot_subtitles": {
-        "特卡波教堂": "這座教堂面對著碧藍湖水，風景如畫。",
-        "牧羊人雕像": "這座雕像致敬新西蘭的牧羊人文化。",
-        "星空保護區": "這是全球首個獲得國際認證的星空保護區。"
+        "Mt.John Observatory": "絕佳的觀星景點",
+        "Tekapo Springs": "泡湯放鬆天地"
       }
+    },
+    "Mt. Cook": {
+      "intro": "新西蘭最高峰，壯麗的自然風光。",
+      "address": "",
+      "area_context": "完美的登山與健行天堂。",
+      "accommodation": "",
+      "trending": [
+        "Tasman Glacier Walk",
+        "Hooker Valley Track",
+        "自訂步道介面"
+      ],
+      "spot_subtitles": {
+        "Tasman Glacier Walk": "氷川步道體驗",
+        "Hooker Valley Track": "絕美山谷步道"
+      }
+    },
+    "皇后鎮": {
+      "intro": "冒險活動的首都，風景優美。",
+      "address": "",
+      "area_context": "融合了刺激與休閒的度假勝地。",
+      "accommodation": "",
+      "trending": [
+        "滑車觀景",
+        "滑雪活動",
+        "米爾福峽灣一日遊"
+      ],
+      "spot_subtitles": {
+        "ONSEN泡湯": "放鬆身心的泡湯體驗",
+        "米爾福峽灣一日遊": "壯麗峽灣之旅"
+      }
+    },
+    "奧克蘭": {
+      "intro": "新西蘭最大的城市，文化多元。",
+      "address": "",
+      "area_context": "繁華的都市與自然景觀交融。",
+      "accommodation": "",
+      "trending": [
+        "天空塔",
+        "奧克蘭藝術館",
+        "全景海灣旅遊"
+      ],
+      "spot_subtitles": {}
+    },
+    "北島": {
+      "intro": "新西蘭文化與自然的心臟地帶。",
+      "address": "",
+      "area_context": "擁有壯麗景觀與豐富歷史。",
+      "accommodation": "",
+      "trending": [
+        "陶波湖",
+        "羅托魯瓦溫泉",
+        "毛利文化體驗"
+      ],
+      "spot_subtitles": {}
+    },
+    "羅托魯瓦": {
+      "intro": "著名的地熱區，獨特的文化氛圍。",
+      "address": "",
+      "area_context": "地熱景觀和毛利文化的交匯。",
+      "accommodation": "",
+      "trending": [
+        "地熱公園",
+        "毛利村體驗",
+        "溫泉療癒"
+      ],
+      "spot_subtitles": {}
     }
   }
 }
