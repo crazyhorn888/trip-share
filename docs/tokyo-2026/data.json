@@ -1,0 +1,35 @@
+{
+  "trip_name": "2026.12 日本",
+  "trip_id": "tokyo-2026",
+  "date_range": "",
+  "last_updated": "2026/06/06 上午10:18",
+  "locations": [],
+  "itinerary": [],
+  "cost_summary": {
+    "zeyu": {
+      "name": "哲宇家",
+      "owed": 1000,
+      "paid": 1000,
+      "remaining": 0,
+      "pct": 100
+    },
+    "shengmin": {
+      "name": "聖閔家",
+      "owed": 200,
+      "paid": 200,
+      "remaining": 0,
+      "pct": 100
+    }
+  },
+  "cost_split": [
+    {
+      "item": "Sample",
+      "zeyu_owed": 1000,
+      "zeyu_paid": 1000,
+      "shengmin_owed": 200,
+      "shengmin_paid": 200,
+      "note": "Sample"
+    }
+  ],
+  "ai_content": {}
+}
