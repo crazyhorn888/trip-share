@@ -1,252 +1,36 @@
 {
-  "trip_name": "2026 紐西蘭",
+  "trip_name": "2026.08 紐西蘭",
   "trip_id": "nz-2026",
-  "trip_emoji": "🇳🇿",
+  "trip_emoji": "🥝",
   "trip_status": "規劃中",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/06/06 下午06:02",
+  "last_updated": "2026/06/06 下午06:07",
   "locations": [
     "基督城",
-    "Lake Tekpo",
+    "Lake Tekapo",
     "Mt. Cook",
     "皇后鎮",
-    "奧克蘭",
-    "北島",
-    "羅托魯瓦"
+    "奧克蘭"
   ],
   "geo_coords": {},
-  "itinerary": [
-    {
-      "date": "2026/07/16",
-      "location": "台北-基督城",
-      "activity": "18:35-13:25",
-      "note": "",
-      "sub_activities": [],
-      "is_main": true
-    },
-    {
-      "date": "2026/7/20-8/15",
-      "location": "基督城",
-      "activity": "上課",
-      "note": "生活開支: 待定",
-      "sub_activities": [],
-      "is_main": true
-    },
-    {
-      "date": "2026/8/15-8/17",
-      "location": "基督城- Lake Tekpo",
-      "activity": "牧羊人教堂",
-      "note": "住: Lake Edge Holiday Park",
-      "sub_activities": [
-        {
-          "activity": "Mt.John Observatory (可報名晚上觀星團)",
-          "note": ""
-        },
-        {
-          "activity": "Tekapo Springs (泡湯玩水)",
-          "note": ""
-        }
-      ],
-      "is_main": true
-    },
-    {
-      "date": "2026/8/17-8/19",
-      "location": "Mt. Cook",
-      "activity": "冰川飛行 (KLOOK訂購)",
-      "note": "住: Haka House Hostel Aoraki Mt Cook",
-      "sub_activities": [
-        {
-          "activity": "Tasman Glacier Walk",
-          "note": ""
-        },
-        {
-          "activity": "Hooker Valley Track",
-          "note": ""
-        },
-        {
-          "activity": "(其他步道 可自由安排)",
-          "note": ""
-        }
-      ],
-      "is_main": true
-    },
-    {
-      "date": "2026/8/19-8/23",
-      "location": "皇后鎮",
-      "activity": "跳傘/峽谷盪鞦韆",
-      "note": "住: Airbnb Whakata on Whitbourn",
-      "sub_activities": [
-        {
-          "activity": "滑車",
-          "note": ""
-        },
-        {
-          "activity": "滑雪",
-          "note": ""
-        },
-        {
-          "activity": "ONSEN泡湯 (五歲以下禁止)",
-          "note": ""
-        },
-        {
-          "activity": "米爾福峽灣一日遊 (KLOOK訂購)",
-          "note": ""
-        },
-        {
-          "activity": "(其他景點 可自由安排)",
-          "note": ""
-        }
-      ],
-      "is_main": true
-    },
-    {
-      "date": "2026/08/23",
-      "location": "皇后鎮-奧克蘭",
-      "activity": "10:35-12:25",
-      "note": "",
-      "sub_activities": [],
-      "is_main": true
-    },
-    {
-      "date": "2026/8/23-25",
-      "location": "北島",
-      "activity": "哈比村",
-      "note": "住: Agoda Rydges Rotorua",
-      "sub_activities": [
-        {
-          "activity": "陶波",
-          "note": ""
-        },
-        {
-          "activity": "羅托魯瓦",
-          "note": ""
-        }
-      ],
-      "is_main": true
-    },
-    {
-      "date": "2026/8/25-27",
-      "location": "羅托魯瓦-奧克蘭",
-      "activity": "City Walk",
-      "note": "住： Agoda Holiday Inn Auckland Airport by IHG \n還車 (or 8/27), 待定",
-      "sub_activities": [],
-      "is_main": true
-    },
-    {
-      "date": "2026/08/27",
-      "location": "奧克蘭-台北",
-      "activity": "09:40-17:05",
-      "note": "",
-      "sub_activities": [],
-      "is_main": true
-    }
-  ],
+  "itinerary": [],
   "cost_summary": {
     "zeyu": {
       "name": "哲宇家",
-      "owed": 271778,
-      "paid": 271778,
+      "owed": 0,
+      "paid": 0,
       "remaining": 0,
-      "pct": 100
+      "pct": 0
     },
     "shengmin": {
       "name": "聖閔家",
-      "owed": 193640,
-      "paid": 128351,
-      "remaining": 65289,
-      "pct": 66.3
+      "owed": 0,
+      "paid": 0,
+      "remaining": 0,
+      "pct": 0
     }
   },
-  "cost_split": [
-    {
-      "item": "哲宇機票",
-      "zeyu_owed": 57848,
-      "zeyu_paid": 57848,
-      "shengmin_owed": 0,
-      "shengmin_paid": 0,
-      "note": "2025.12.19 哲宇已匯"
-    },
-    {
-      "item": "基督城住宿",
-      "zeyu_owed": 51850,
-      "zeyu_paid": 51850,
-      "shengmin_owed": 51850,
-      "shengmin_paid": 51850,
-      "note": "($$: 155560 /三家)"
-    },
-    {
-      "item": "8/15-17住宿 \nLake Edge Holiday Park",
-      "zeyu_owed": 11942,
-      "zeyu_paid": 11942,
-      "shengmin_owed": 11942,
-      "shengmin_paid": 11942,
-      "note": "($$: 君 15137)\n($$: 聖閔+哲宇: 23884)"
-    },
-    {
-      "item": "8/17-19住宿 \nHaka House Hostel Aoraki Mt Cook",
-      "zeyu_owed": 17432,
-      "zeyu_paid": 17432,
-      "shengmin_owed": 11925,
-      "shengmin_paid": 11925,
-      "note": "($$: 君/聖閔: 6*3970 = 23820)\n($$: 哲宇: 4*4358 = 17432)"
-    },
-    {
-      "item": "8/19-23住宿 Whakata on Whitbourn",
-      "zeyu_owed": 38541,
-      "zeyu_paid": 38541,
-      "shengmin_owed": 38541,
-      "shengmin_paid": 38541,
-      "note": "($$: 115623/三家)"
-    },
-    {
-      "item": "8/23 紐西蘭國內航空機票",
-      "zeyu_owed": 23223,
-      "zeyu_paid": 23223,
-      "shengmin_owed": 17835,
-      "shengmin_paid": 0,
-      "note": "2026.05.09 君已先結 (6/6哲宇已結)"
-    },
-    {
-      "item": "紐西蘭租車（07/17-08/23）",
-      "zeyu_owed": 56849,
-      "zeyu_paid": 56849,
-      "shengmin_owed": 36707,
-      "shengmin_paid": 0,
-      "note": "2026.05.09 SNAP 聖閔+君（君已匯73414） 哲宇 （君已匯56849）(6/6哲宇已結)"
-    },
-    {
-      "item": "紐西蘭租車（08/14-08/23)",
-      "zeyu_owed": 0,
-      "zeyu_paid": 0,
-      "shengmin_owed": 10747,
-      "shengmin_paid": 0,
-      "note": "2026.05.09 Eurocar 聖閔+君  21495（君已匯21495）"
-    },
-    {
-      "item": "紐西蘭租車（08/23-08/27)",
-      "zeyu_owed": 0,
-      "zeyu_paid": 0,
-      "shengmin_owed": 0,
-      "shengmin_paid": 0,
-      "note": "各家自行處理，哲宇11191+聖閔10069已匯回"
-    },
-    {
-      "item": "8/23-25住宿Rydges Rotorua",
-      "zeyu_owed": 7198,
-      "zeyu_paid": 7198,
-      "shengmin_owed": 7198,
-      "shengmin_paid": 7198,
-      "note": "($$: 21592/三家)"
-    },
-    {
-      "item": "8/25-27住宿Holiday Inn Auckland Airport by IHG",
-      "zeyu_owed": 6895,
-      "zeyu_paid": 6895,
-      "shengmin_owed": 6895,
-      "shengmin_paid": 6895,
-      "note": "($$: 20683/三家)"
-    }
-  ],
+  "cost_split": [],
   "ai_content": {
     "基督城": {
       "intro": "基督城是新西蘭南島最大城市，也是南島的文化與商業中心。這裡保存著英式風格的建築與現代化的城市景觀。此區相關景點：基督城植物園、坎特伯雷博物館、基督城藝術中心。",
@@ -284,6 +68,14 @@
     "羅托魯瓦": {
       "intro": "羅托魯瓦是以地熱溫泉聞名的城市，吸引著眾多旅客前來放鬆身心。這裡的毛利文化與活動也讓人印象深刻，充滿獨特魅力。此區相關景點：地熱公園、毛利文化村、羅托魯瓦湖。",
       "spot_subtitles": {}
+    },
+    "Lake Tekapo": {
+      "intro": "特卡波湖是一個以壯麗湖光山色聞名的小鎮。這裡的夜空是新西蘭最明亮的星空之一，深受天文愛好者的喜愛。此區相關景點：特卡波教堂、牧羊人雕像、星空保護區。",
+      "spot_subtitles": {
+        "特卡波教堂": "這座教堂面對著碧藍湖水，風景如畫。",
+        "牧羊人雕像": "這座雕像致敬新西蘭的牧羊人文化。",
+        "星空保護區": "這是全球首個獲得國際認證的星空保護區。"
+      }
     }
   }
 }
