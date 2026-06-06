@@ -1,8 +1,10 @@
 {
   "trip_name": "2026 紐西蘭",
   "trip_id": "nz-2026",
+  "trip_emoji": "🇳🇿",
+  "trip_status": "規劃中",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/06/06 下午03:42",
+  "last_updated": "2026/06/06 下午06:02",
   "locations": [
     "基督城",
     "Lake Tekpo",
@@ -12,6 +14,7 @@
     "北島",
     "羅托魯瓦"
   ],
+  "geo_coords": {},
   "itinerary": [
     {
       "date": "2026/07/16",
