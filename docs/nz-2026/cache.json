@@ -1,9 +1,7 @@
 {
-  "location_hash": "Lake Tekapo|Mt. Cook|基督城|奧克蘭|皇后鎮",
+  "location_hash": "基督城|奧克蘭|皇后鎮",
   "locations": [
     "基督城",
-    "Lake Tekapo",
-    "Mt. Cook",
     "皇后鎮",
     "奧克蘭"
   ],
@@ -54,5 +52,5 @@
       }
     }
   },
-  "updated_at": "2026/06/06 下午06:07"
+  "updated_at": "2026/06/06 下午06:08"
 }
