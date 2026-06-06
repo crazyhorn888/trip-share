@@ -23,10 +23,11 @@ except ImportError:
     sys.exit(1)
 
 # ── 設定 ─────────────────────────────────────────────────────────────
-WATCH_FOLDER = Path.home() / "Library/Mobile Documents/com~apple~Numbers/Documents/旅行"
+WATCH_FOLDER = Path.home() / "Library/Mobile Documents/com~apple~Numbers/Documents/Travel Share"
 N8N_WEBHOOK  = "http://localhost:5678/webhook/trip-sync"
 LOCK_FILE    = Path("/tmp/trip-sync.lock")
 DEBOUNCE_SEC = 60
+STATE_FILE   = Path("/tmp/trip-sync-state.json")
 
 # 過渡期保險：設定工作表尚未填寫時的 fallback 對照
 TRIP_ID_MAP = {
@@ -170,6 +171,31 @@ def check_debounce() -> bool:
     LOCK_FILE.touch()
     return True
 
+# ── Fingerprint（Method B：內容比對，避免無效 commit）─────────────────
+def get_bundle_fingerprint(nf: Path) -> str:
+    """掃 .numbers bundle 內所有檔案，取最新 mtime 作為 fingerprint"""
+    try:
+        latest = nf.stat().st_mtime
+        for f in nf.rglob("*"):
+            if f.is_file():
+                t = f.stat().st_mtime
+                if t > latest:
+                    latest = t
+        return f"{latest:.3f}"
+    except Exception:
+        return "0"
+
+def load_state() -> dict:
+    if STATE_FILE.exists():
+        try:
+            return json.loads(STATE_FILE.read_text())
+        except Exception:
+            pass
+    return {}
+
+def save_state(state: dict):
+    STATE_FILE.write_text(json.dumps(state, indent=2))
+
 def find_all_numbers(folder: Path) -> list:
     """回傳所有 .numbers 檔，依修改時間新→舊排序"""
     return sorted(folder.glob("*.numbers"), key=lambda f: f.stat().st_mtime, reverse=True)
@@ -203,10 +229,20 @@ def main():
 
     files = find_all_numbers(WATCH_FOLDER)
     if not files:
-        print("ERROR: 旅行/ 內沒有 .numbers 檔案")
+        print("ERROR: Travel Share/ 內沒有 .numbers 檔案")
         sys.exit(1)
 
+    state = load_state()
+    state_updated = False
+
     for nf in files:
+        fingerprint = get_bundle_fingerprint(nf)
+        key = nf.name
+
+        if state.get(key) == fingerprint:
+            print(f"[skip] {nf.name} 未變動，跳過")
+            continue
+
         print(f"[sync] 解析: {nf.name}")
         try:
             doc = numbers_parser.Document(str(nf))
@@ -254,8 +290,13 @@ def main():
 
         try:
             post_to_n8n(payload)
+            state[key] = fingerprint
+            state_updated = True
         except urllib.error.URLError as e:
             print(f"[sync] ❌ N8N 連線失敗 ({nf.name}): {e}")
+
+    if state_updated:
+        save_state(state)
 
 if __name__ == "__main__":
     main()
