@@ -1,14 +1,108 @@
 {
-  "location_hash": "",
+  "location_hash": "Lake Tekapo|Mt. Cook|北島|基督城|奧克蘭|皇后鎮|羅托魯瓦",
   "locations": [
     "基督城",
-    "Lake Tekpo",
+    "Lake Tekapo",
     "Mt. Cook",
     "皇后鎮",
     "奧克蘭",
     "北島",
     "羅托魯瓦"
   ],
-  "ai_content": {},
-  "updated_at": "2026/06/06 下午06:22"
+  "ai_content": {
+    "基督城": {
+      "intro": "新西蘭南島重要城市之一。",
+      "address": "",
+      "area_context": "擁有悠久歷史與美麗公園的城市。",
+      "accommodation": "",
+      "trending": [
+        "坎特伯雷博物館",
+        "基督城植物園",
+        "重建後的市中心"
+      ],
+      "spot_subtitles": {}
+    },
+    "Lake Tekapo": {
+      "intro": "美麗的湖泊，以夜空聞名。",
+      "address": "",
+      "area_context": "湖水呈現迷人藍色的山谷。",
+      "accommodation": "",
+      "trending": [
+        "Mt.John Observatory",
+        "Tekapo Springs",
+        "星空攝影體驗"
+      ],
+      "spot_subtitles": {
+        "Mt.John Observatory": "絕佳的觀星景點",
+        "Tekapo Springs": "泡湯放鬆天地"
+      }
+    },
+    "Mt. Cook": {
+      "intro": "新西蘭最高峰，壯麗的自然風光。",
+      "address": "",
+      "area_context": "完美的登山與健行天堂。",
+      "accommodation": "",
+      "trending": [
+        "Tasman Glacier Walk",
+        "Hooker Valley Track",
+        "自訂步道介面"
+      ],
+      "spot_subtitles": {
+        "Tasman Glacier Walk": "氷川步道體驗",
+        "Hooker Valley Track": "絕美山谷步道"
+      }
+    },
+    "皇后鎮": {
+      "intro": "冒險活動的首都，風景優美。",
+      "address": "",
+      "area_context": "融合了刺激與休閒的度假勝地。",
+      "accommodation": "",
+      "trending": [
+        "滑車觀景",
+        "滑雪活動",
+        "米爾福峽灣一日遊"
+      ],
+      "spot_subtitles": {
+        "ONSEN泡湯": "放鬆身心的泡湯體驗",
+        "米爾福峽灣一日遊": "壯麗峽灣之旅"
+      }
+    },
+    "奧克蘭": {
+      "intro": "新西蘭最大的城市，文化多元。",
+      "address": "",
+      "area_context": "繁華的都市與自然景觀交融。",
+      "accommodation": "",
+      "trending": [
+        "天空塔",
+        "奧克蘭藝術館",
+        "全景海灣旅遊"
+      ],
+      "spot_subtitles": {}
+    },
+    "北島": {
+      "intro": "新西蘭文化與自然的心臟地帶。",
+      "address": "",
+      "area_context": "擁有壯麗景觀與豐富歷史。",
+      "accommodation": "",
+      "trending": [
+        "陶波湖",
+        "羅托魯瓦溫泉",
+        "毛利文化體驗"
+      ],
+      "spot_subtitles": {}
+    },
+    "羅托魯瓦": {
+      "intro": "著名的地熱區，獨特的文化氛圍。",
+      "address": "",
+      "area_context": "地熱景觀和毛利文化的交匯。",
+      "accommodation": "",
+      "trending": [
+        "地熱公園",
+        "毛利村體驗",
+        "溫泉療癒"
+      ],
+      "spot_subtitles": {}
+    }
+  },
+  "updated_at": "2026/06/06 下午07:24"
 }
