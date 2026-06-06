@@ -11,6 +11,8 @@ import sys
 import time
 import urllib.request
 import urllib.error
+import urllib.parse
+import ssl
 from pathlib import Path
 from datetime import datetime
 import warnings
@@ -28,10 +30,17 @@ N8N_WEBHOOK  = "http://localhost:5678/webhook/trip-sync"
 LOCK_FILE    = Path("/tmp/trip-sync.lock")
 DEBOUNCE_SEC = 60
 STATE_FILE   = Path("/tmp/trip-sync-state.json")
+GEO_CACHE    = Path("/tmp/trip-geo-cache.json")
 
 # 過渡期保險：設定工作表尚未填寫時的 fallback 對照
 TRIP_ID_MAP = {
     "2026.08 紐西蘭": "nz-2026",
+}
+
+# Nominatim countrycodes 篩選（ISO 3166-1 alpha-2），trip_id → 國家代碼
+TRIP_COUNTRY = {
+    "nz-2026":     "nz",
+    "tokyo-2026":  "jp",
 }
 
 # ── 工具函式 ──────────────────────────────────────────────────────────
@@ -200,6 +209,51 @@ def find_all_numbers(folder: Path) -> list:
     """回傳所有 .numbers 檔，依修改時間新→舊排序"""
     return sorted(folder.glob("*.numbers"), key=lambda f: f.stat().st_mtime, reverse=True)
 
+def geocode_locations(locations: list, country_code: str = "") -> dict:
+    """用 Nominatim 查詢地名座標，結果快取到 /tmp/trip-geo-cache.json"""
+    cache = {}
+    if GEO_CACHE.exists():
+        try:
+            cache = json.loads(GEO_CACHE.read_text())
+        except Exception:
+            pass
+
+    ssl_ctx = ssl.create_default_context()
+    ssl_ctx.check_hostname = False
+    ssl_ctx.verify_mode = ssl.CERT_NONE
+
+    result = {}
+    for loc in locations:
+        if loc in cache:
+            result[loc] = cache[loc]
+            continue
+        try:
+            cc_param = f"&countrycodes={country_code}" if country_code else ""
+            url = (
+                "https://nominatim.openstreetmap.org/search?"
+                f"q={urllib.parse.quote(loc)}&format=json&limit=1&accept-language=zh-TW,en{cc_param}"
+            )
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "trip-share/1.0 (personal travel planner)"},
+            )
+            with urllib.request.urlopen(req, timeout=10, context=ssl_ctx) as resp:
+                data = json.loads(resp.read())
+            if data and isinstance(data, list) and data[0]:
+                coords = [float(data[0]["lat"]), float(data[0]["lon"])]
+                result[loc] = coords
+                cache[loc] = coords
+                print(f"[geo] {loc} → {coords}")
+            else:
+                print(f"[geo] {loc} → no result")
+            time.sleep(0.35)
+        except Exception as e:
+            print(f"[geo] {loc} → error: {e}")
+
+    GEO_CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2))
+    return result
+
+
 def post_to_n8n(payload: dict):
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req  = urllib.request.Request(
@@ -256,10 +310,11 @@ def main():
             print(f"[sync] ⏭ {nf.name} publish=0，跳過")
             continue
 
-        trip_id     = get_trip_id(settings, nf.name)
-        trip_name   = str(settings.get("trip_name", nf.stem)).strip() or nf.stem
-        trip_emoji  = str(settings.get("emoji",     "✈️")).strip()
-        trip_status = str(settings.get("status",    "規劃中")).strip()
+        trip_id      = get_trip_id(settings, nf.name)
+        trip_name    = str(settings.get("trip_name",     nf.stem)).strip() or nf.stem
+        trip_emoji   = str(settings.get("emoji",         "✈️")).strip()
+        trip_status  = str(settings.get("status",        "規劃中")).strip()
+        country_code = str(settings.get("country_code",  "")).strip() or TRIP_COUNTRY.get(trip_id, "")
 
         raw_itinerary  = parse_sheet_as_dicts(doc, "行程")
         raw_bookings   = parse_sheet_as_dicts(doc, "訂位")
@@ -269,6 +324,7 @@ def main():
         bookings   = parse_bookings(raw_bookings)
         cost_split = parse_cost_split(raw_cost_split)
         locations  = extract_locations(itinerary)
+        geo_coords = geocode_locations(locations, country_code=country_code)
 
         date_range = ""
         if itinerary:
@@ -283,6 +339,7 @@ def main():
             "trip_status": trip_status,
             "date_range":  date_range,
             "locations":   locations,
+            "geo_coords":  geo_coords,
             "itinerary":   itinerary,
             "bookings":    bookings,
             "cost_split":  cost_split,
