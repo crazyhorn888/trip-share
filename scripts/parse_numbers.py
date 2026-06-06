@@ -333,16 +333,17 @@ def main():
             date_range = f"{d0} – {d1}" if d0 != d1 else d0
 
         payload = {
-            "trip_id":     trip_id,
-            "trip_name":   trip_name,
-            "trip_emoji":  trip_emoji,
-            "trip_status": trip_status,
-            "date_range":  date_range,
-            "locations":   locations,
-            "geo_coords":  geo_coords,
-            "itinerary":   itinerary,
-            "bookings":    bookings,
-            "cost_split":  cost_split,
+            "trip_id":      trip_id,
+            "trip_name":    trip_name,
+            "trip_emoji":   trip_emoji,
+            "trip_status":  trip_status,
+            "country_code": country_code,
+            "date_range":   date_range,
+            "locations":    locations,
+            "geo_coords":   geo_coords,
+            "itinerary":    itinerary,
+            "bookings":     bookings,
+            "cost_split":   cost_split,
         }
 
         try:
