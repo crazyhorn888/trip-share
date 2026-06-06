@@ -1,5 +1,5 @@
 {
-  "location_hash": "",
+  "location_hash": "Lake Tekapo|Mt. Cook|北島|基督城|奧克蘭|皇后鎮|羅托魯瓦",
   "locations": [
     "基督城",
     "Lake Tekapo",
@@ -9,6 +9,100 @@
     "北島",
     "羅托魯瓦"
   ],
-  "ai_content": {},
-  "updated_at": "2026/06/06 下午07:28"
+  "ai_content": {
+    "基督城": {
+      "intro": "新西蘭南島的花園城市。",
+      "address": "",
+      "area_context": "基督城以其美麗的公園和歷史建築聞名。",
+      "accommodation": "",
+      "trending": [
+        "植物園",
+        "基督城大教堂",
+        "雅芳河遊船"
+      ],
+      "spot_subtitles": {}
+    },
+    "Lake Tekapo": {
+      "intro": "手握天上星河的夢幻湖泊。",
+      "address": "Lake Tekapo, New Zealand",
+      "area_context": "擁有絕美星空和迷人氣候的高山湖泊。",
+      "accommodation": "",
+      "trending": [
+        "Mt.John Observatory",
+        "Tekapo Springs",
+        "星空攝影"
+      ],
+      "spot_subtitles": {
+        "Mt.John Observatory": "觀星愛好者的聖地",
+        "Tekapo Springs": "享受自然的溫泉"
+      }
+    },
+    "Mt. Cook": {
+      "intro": "新西蘭最高的山峰，壯觀無比。",
+      "address": "Aoraki / Mount Cook National Park, New Zealand",
+      "area_context": "壯麗的山脈與冰川交織而成的自然奇跡。",
+      "accommodation": "",
+      "trending": [
+        "Tasman Glacier Walk",
+        "Hooker Valley Track",
+        "登山健行"
+      ],
+      "spot_subtitles": {
+        "Tasman Glacier Walk": "親近冰川的步道",
+        "Hooker Valley Track": "難忘的自然景觀"
+      }
+    },
+    "皇后鎮": {
+      "intro": "冒險運動的世界首都。",
+      "address": "",
+      "area_context": "擁有壯觀的湖泊和山脈，活力四射的旅遊熱點。",
+      "accommodation": "",
+      "trending": [
+        "滑車",
+        "滑雪",
+        "ONSEN泡湯"
+      ],
+      "spot_subtitles": {
+        "米爾福峽灣一日遊": "探索自然的奇蹟",
+        "滑車": "俯瞰美景的刺激體驗"
+      }
+    },
+    "奧克蘭": {
+      "intro": "新西蘭最大的城市，繁華生活。",
+      "address": "",
+      "area_context": "融合文化、藝術和美食的大都市。",
+      "accommodation": "",
+      "trending": [
+        "天空塔",
+        "奧克蘭港灣",
+        "Waiheke Island"
+      ],
+      "spot_subtitles": {}
+    },
+    "北島": {
+      "intro": "新西蘭文化與自然的交匯地。",
+      "address": "",
+      "area_context": "擁有豐富的毛利文化和多樣的地形。",
+      "accommodation": "",
+      "trending": [
+        "陶波",
+        "羅托魯瓦 Thermal Areas",
+        "Hobbiton"
+      ],
+      "spot_subtitles": {}
+    },
+    "羅托魯瓦": {
+      "intro": "聞名於地熱活動和毛利文化的熱鬧城市。",
+      "address": "Rotorua, New Zealand",
+      "area_context": "熱泉、泥漿池與毛利村莊交織的獨特魅力。",
+      "accommodation": "",
+      "trending": [
+        "地熱公園",
+        "毛利文化村",
+        "泡湯"
+      ],
+      "spot_subtitles": {}
+    }
+  },
+  "updated_at": "2026/06/06 下午08:25"
 }
