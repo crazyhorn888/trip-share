@@ -4,7 +4,7 @@
   "trip_emoji": "🇳🇿",
   "trip_status": "規劃中",
   "date_range": "2026/07/16 – 2026/08/27",
-  "last_updated": "2026/06/06 下午07:28",
+  "last_updated": "2026/06/06 下午08:25",
   "locations": [
     "基督城",
     "Lake Tekapo",
@@ -274,95 +274,95 @@
   ],
   "ai_content": {
     "基督城": {
-      "intro": "新西蘭南島重要城市之一。",
+      "intro": "新西蘭南島的花園城市。",
       "address": "",
-      "area_context": "擁有悠久歷史與美麗公園的城市。",
+      "area_context": "基督城以其美麗的公園和歷史建築聞名。",
       "accommodation": "",
       "trending": [
-        "坎特伯雷博物館",
-        "基督城植物園",
-        "重建後的市中心"
+        "植物園",
+        "基督城大教堂",
+        "雅芳河遊船"
       ],
       "spot_subtitles": {}
     },
     "Lake Tekapo": {
-      "intro": "美麗的湖泊，以夜空聞名。",
-      "address": "",
-      "area_context": "湖水呈現迷人藍色的山谷。",
+      "intro": "手握天上星河的夢幻湖泊。",
+      "address": "Lake Tekapo, New Zealand",
+      "area_context": "擁有絕美星空和迷人氣候的高山湖泊。",
       "accommodation": "",
       "trending": [
         "Mt.John Observatory",
         "Tekapo Springs",
-        "星空攝影體驗"
+        "星空攝影"
       ],
       "spot_subtitles": {
-        "Mt.John Observatory": "絕佳的觀星景點",
-        "Tekapo Springs": "泡湯放鬆天地"
+        "Mt.John Observatory": "觀星愛好者的聖地",
+        "Tekapo Springs": "享受自然的溫泉"
       }
     },
     "Mt. Cook": {
-      "intro": "新西蘭最高峰，壯麗的自然風光。",
-      "address": "",
-      "area_context": "完美的登山與健行天堂。",
+      "intro": "新西蘭最高的山峰，壯觀無比。",
+      "address": "Aoraki / Mount Cook National Park, New Zealand",
+      "area_context": "壯麗的山脈與冰川交織而成的自然奇跡。",
       "accommodation": "",
       "trending": [
         "Tasman Glacier Walk",
         "Hooker Valley Track",
-        "自訂步道介面"
+        "登山健行"
       ],
       "spot_subtitles": {
-        "Tasman Glacier Walk": "氷川步道體驗",
-        "Hooker Valley Track": "絕美山谷步道"
+        "Tasman Glacier Walk": "親近冰川的步道",
+        "Hooker Valley Track": "難忘的自然景觀"
       }
     },
     "皇后鎮": {
-      "intro": "冒險活動的首都，風景優美。",
+      "intro": "冒險運動的世界首都。",
       "address": "",
-      "area_context": "融合了刺激與休閒的度假勝地。",
+      "area_context": "擁有壯觀的湖泊和山脈，活力四射的旅遊熱點。",
       "accommodation": "",
       "trending": [
-        "滑車觀景",
-        "滑雪活動",
-        "米爾福峽灣一日遊"
+        "滑車",
+        "滑雪",
+        "ONSEN泡湯"
       ],
       "spot_subtitles": {
-        "ONSEN泡湯": "放鬆身心的泡湯體驗",
-        "米爾福峽灣一日遊": "壯麗峽灣之旅"
+        "米爾福峽灣一日遊": "探索自然的奇蹟",
+        "滑車": "俯瞰美景的刺激體驗"
       }
     },
     "奧克蘭": {
-      "intro": "新西蘭最大的城市，文化多元。",
+      "intro": "新西蘭最大的城市，繁華生活。",
       "address": "",
-      "area_context": "繁華的都市與自然景觀交融。",
+      "area_context": "融合文化、藝術和美食的大都市。",
       "accommodation": "",
       "trending": [
         "天空塔",
-        "奧克蘭藝術館",
-        "全景海灣旅遊"
+        "奧克蘭港灣",
+        "Waiheke Island"
       ],
       "spot_subtitles": {}
     },
     "北島": {
-      "intro": "新西蘭文化與自然的心臟地帶。",
+      "intro": "新西蘭文化與自然的交匯地。",
       "address": "",
-      "area_context": "擁有壯麗景觀與豐富歷史。",
+      "area_context": "擁有豐富的毛利文化和多樣的地形。",
       "accommodation": "",
       "trending": [
-        "陶波湖",
-        "羅托魯瓦溫泉",
-        "毛利文化體驗"
+        "陶波",
+        "羅托魯瓦 Thermal Areas",
+        "Hobbiton"
       ],
       "spot_subtitles": {}
     },
     "羅托魯瓦": {
-      "intro": "著名的地熱區，獨特的文化氛圍。",
-      "address": "",
-      "area_context": "地熱景觀和毛利文化的交匯。",
+      "intro": "聞名於地熱活動和毛利文化的熱鬧城市。",
+      "address": "Rotorua, New Zealand",
+      "area_context": "熱泉、泥漿池與毛利村莊交織的獨特魅力。",
       "accommodation": "",
       "trending": [
         "地熱公園",
-        "毛利村體驗",
-        "溫泉療癒"
+        "毛利文化村",
+        "泡湯"
       ],
       "spot_subtitles": {}
     }
