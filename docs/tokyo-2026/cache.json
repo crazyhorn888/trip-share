@@ -1,5 +1,5 @@
 {
-  "location_hash": "",
+  "location_hash": "FREE|Snoopy博物館 銀座|三麗鷗彩虹樂園 六本木|東京|迪士尼",
   "locations": [
     "東京",
     "迪士尼",
@@ -7,6 +7,67 @@
     "FREE",
     "Snoopy博物館 銀座"
   ],
-  "ai_content": {},
-  "updated_at": "2026/06/06 下午07:28"
+  "ai_content": {
+    "東京": {
+      "intro": "東京是日本的文化與經濟中心。",
+      "address": "",
+      "area_context": "現代與傳統交融的繁華都市。",
+      "accommodation": "",
+      "trending": [
+        "東京塔",
+        "淺草寺",
+        "秋葉原電子街"
+      ],
+      "spot_subtitles": {}
+    },
+    "迪士尼": {
+      "intro": "東京迪士尼是夢幻的主題樂園。",
+      "address": "1-1 Maihama, Chiba, Japan",
+      "area_context": "充滿奇幻與冒險的遊樂天地。",
+      "accommodation": "",
+      "trending": [
+        "新演出節目",
+        "特色餐廳",
+        "限量商品販售"
+      ],
+      "spot_subtitles": {}
+    },
+    "三麗鷗彩虹樂園": {
+      "intro": "專為三麗鷗角色設計的主題樂園。",
+      "address": "1 Chome-22-11, Shibuya City, Tokyo, Japan",
+      "area_context": "可愛角色陪伴的歡樂樂園。",
+      "accommodation": "",
+      "trending": [
+        "角色見面會",
+        "主題商店",
+        "特色展覽"
+      ],
+      "spot_subtitles": {}
+    },
+    "FREE": {
+      "intro": "充滿無限可能的自由探索空間。",
+      "address": "",
+      "area_context": "無拘無束，體驗多樣活動的地區。",
+      "accommodation": "",
+      "trending": [
+        "當地市集",
+        "街頭藝術展",
+        "音樂表演"
+      ],
+      "spot_subtitles": {}
+    },
+    "Snoopy博物館": {
+      "intro": "致敬史努比的可愛博物館。",
+      "address": "3 Chome-5-21, Ginza, Tokyo, Japan",
+      "area_context": "結合藝術與漫畫文化的特色場所。",
+      "accommodation": "",
+      "trending": [
+        "限量展覽",
+        "特色商品販售",
+        "藝術工作坊"
+      ],
+      "spot_subtitles": {}
+    }
+  },
+  "updated_at": "2026/06/06 下午08:25"
 }
