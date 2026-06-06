@@ -1,12 +1,73 @@
 {
-  "location_hash": "",
+  "location_hash": "FREE|Snoopy博物館 銀座|三麗鷗彩虹樂園 六本木|東京|迪士尼",
   "locations": [
     "東京",
     "迪士尼",
-    "三麗鷗彩虹樂園+六本木",
-    "FREE!!!!!",
-    "Snoopy博物館+銀座"
+    "三麗鷗彩虹樂園 六本木",
+    "FREE",
+    "Snoopy博物館 銀座"
   ],
-  "ai_content": {},
-  "updated_at": "2026/06/06 下午06:22"
+  "ai_content": {
+    "東京": {
+      "intro": "東京是融合傳統與現代的城市。",
+      "address": "",
+      "area_context": "這裡充滿了活力、文化和多樣的美食選擇。",
+      "accommodation": "",
+      "trending": [
+        "新宿歌舞伎町夜生活",
+        "秋葉原電子產品",
+        "淺草寺文化體驗"
+      ],
+      "spot_subtitles": {}
+    },
+    "迪士尼": {
+      "intro": "東京迪士尼是夢想與幻想的世界。",
+      "address": "千葉縣浦安市舞濱1-1",
+      "area_context": "這裡是家庭親子遊玩的天堂，充滿奇幻氛圍。",
+      "accommodation": "",
+      "trending": [
+        "最新遊樂設施",
+        "迪士尼限量商品",
+        "角色主題餐廳"
+      ],
+      "spot_subtitles": {}
+    },
+    "三麗鷗彩虹樂園六本木": {
+      "intro": "這裡是三麗鷗角色的夢幻世界。",
+      "address": "東京都港區六本木5丁目6-20",
+      "area_context": "歡樂的氛圍讓每位粉絲流連忘返。",
+      "accommodation": "",
+      "trending": [
+        "限定商品發售",
+        "角色見面會",
+        "主題咖啡廳體驗"
+      ],
+      "spot_subtitles": {}
+    },
+    "FREE": {
+      "intro": "探索東京的免費景點令人心動。",
+      "address": "",
+      "area_context": "這裡有許多文化與自然的享受，經濟實惠。",
+      "accommodation": "",
+      "trending": [
+        "公園散步",
+        "博物館免費日",
+        "當地市場探索"
+      ],
+      "spot_subtitles": {}
+    },
+    "Snoopy博物館銀座": {
+      "intro": "這是喜愛史努比的粉絲夢想之地。",
+      "address": "東京都中央區銀座5-8-1",
+      "area_context": "館內充滿了可愛角色與創意展覽。",
+      "accommodation": "",
+      "trending": [
+        "特展活動",
+        "周邊商品販賣",
+        "咖啡廳休憩"
+      ],
+      "spot_subtitles": {}
+    }
+  },
+  "updated_at": "2026/06/06 下午07:24"
 }
