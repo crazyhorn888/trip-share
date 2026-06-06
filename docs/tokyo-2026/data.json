@@ -4,7 +4,7 @@
   "trip_emoji": "🇯🇵",
   "trip_status": "規劃中",
   "date_range": "2026/12/21 – 2026/12/28",
-  "last_updated": "2026/06/06 下午07:28",
+  "last_updated": "2026/06/06 下午08:25",
   "locations": [
     "東京",
     "迪士尼",
@@ -112,94 +112,64 @@
   ],
   "ai_content": {
     "東京": {
-      "intro": "東京是融合傳統與現代的城市。",
+      "intro": "東京是日本的文化與經濟中心。",
       "address": "",
-      "area_context": "這裡充滿了活力、文化和多樣的美食選擇。",
+      "area_context": "現代與傳統交融的繁華都市。",
       "accommodation": "",
       "trending": [
-        "新宿歌舞伎町夜生活",
-        "秋葉原電子產品",
-        "淺草寺文化體驗"
+        "東京塔",
+        "淺草寺",
+        "秋葉原電子街"
       ],
       "spot_subtitles": {}
     },
     "迪士尼": {
-      "intro": "東京迪士尼是夢想與幻想的世界。",
-      "address": "千葉縣浦安市舞濱1-1",
-      "area_context": "這裡是家庭親子遊玩的天堂，充滿奇幻氛圍。",
+      "intro": "東京迪士尼是夢幻的主題樂園。",
+      "address": "1-1 Maihama, Chiba, Japan",
+      "area_context": "充滿奇幻與冒險的遊樂天地。",
       "accommodation": "",
       "trending": [
-        "最新遊樂設施",
-        "迪士尼限量商品",
-        "角色主題餐廳"
-      ],
-      "spot_subtitles": {}
-    },
-    "三麗鷗彩虹樂園六本木": {
-      "intro": "這裡是三麗鷗角色的夢幻世界。",
-      "address": "東京都港區六本木5丁目6-20",
-      "area_context": "歡樂的氛圍讓每位粉絲流連忘返。",
-      "accommodation": "",
-      "trending": [
-        "限定商品發售",
-        "角色見面會",
-        "主題咖啡廳體驗"
-      ],
-      "spot_subtitles": {}
-    },
-    "FREE": {
-      "intro": "探索東京的免費景點令人心動。",
-      "address": "",
-      "area_context": "這裡有許多文化與自然的享受，經濟實惠。",
-      "accommodation": "",
-      "trending": [
-        "公園散步",
-        "博物館免費日",
-        "當地市場探索"
-      ],
-      "spot_subtitles": {}
-    },
-    "Snoopy博物館銀座": {
-      "intro": "這是喜愛史努比的粉絲夢想之地。",
-      "address": "東京都中央區銀座5-8-1",
-      "area_context": "館內充滿了可愛角色與創意展覽。",
-      "accommodation": "",
-      "trending": [
-        "特展活動",
-        "周邊商品販賣",
-        "咖啡廳休憩"
+        "新演出節目",
+        "特色餐廳",
+        "限量商品販售"
       ],
       "spot_subtitles": {}
     },
     "三麗鷗彩虹樂園": {
-      "intro": "讓人沉浸在可愛角色世界中的主題樂園。",
-      "address": "東京都港區六本木6-7-1",
-      "area_context": "",
+      "intro": "專為三麗鷗角色設計的主題樂園。",
+      "address": "1 Chome-22-11, Shibuya City, Tokyo, Japan",
+      "area_context": "可愛角色陪伴的歡樂樂園。",
       "accommodation": "",
       "trending": [
-        "彩虹樂園限定商品",
-        "角色主題表演",
-        "親子互動體驗"
+        "角色見面會",
+        "主題商店",
+        "特色展覽"
       ],
-      "spot_subtitles": {
-        "特色遊樂設施": "萌趣無窮的遊樂設施",
-        "角色見面會": "與三麗鷗角色親密接觸"
-      }
+      "spot_subtitles": {}
+    },
+    "FREE": {
+      "intro": "充滿無限可能的自由探索空間。",
+      "address": "",
+      "area_context": "無拘無束，體驗多樣活動的地區。",
+      "accommodation": "",
+      "trending": [
+        "當地市集",
+        "街頭藝術展",
+        "音樂表演"
+      ],
+      "spot_subtitles": {}
     },
     "Snoopy博物館": {
-      "intro": "專門奉獻給史努比和查理布朗的可愛博物館。",
-      "address": "東京都港區白金台5-15-2",
-      "area_context": "",
+      "intro": "致敬史努比的可愛博物館。",
+      "address": "3 Chome-5-21, Ginza, Tokyo, Japan",
+      "area_context": "結合藝術與漫畫文化的特色場所。",
       "accommodation": "",
       "trending": [
-        "期間限定展覽",
-        "各種周邊商品",
-        "製作DIY手作"
+        "限量展覽",
+        "特色商品販售",
+        "藝術工作坊"
       ],
-      "spot_subtitles": {
-        "歷史展區": "了解史努比的創作故事",
-        "互動體驗區": "與史努比一起快樂互動"
-      }
+      "spot_subtitles": {}
     }
   }
 }
